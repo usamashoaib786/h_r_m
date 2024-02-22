@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hrm_project/Utils/resources/res/app_theme.dart';
+import 'package:h_r_m/Utils/resources/res/app_theme.dart';
 
 class CustomAppFormField extends StatefulWidget {
   final double? height;
@@ -76,9 +76,9 @@ class _CustomAppFormFieldState extends State<CustomAppFormField> {
       height: 60,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-          border: Border.all(color: Color(0xff46464680)),
+          border: Border.all(color: Color(0xff464646)),
           color: AppTheme.white,
-          borderRadius: BorderRadius.circular(20)),
+          borderRadius: BorderRadius.circular(15)),
       child: TextField(
         controller: widget.controller,
         cursorColor: AppTheme.white,
@@ -94,7 +94,7 @@ class _CustomAppFormFieldState extends State<CustomAppFormField> {
             contentPadding: const EdgeInsets.all(15),
             hintText: widget.texthint,
             hintStyle: const TextStyle(
-                color: Color(0xff32110766),
+                color: Color.fromARGB(255, 181, 169, 169),
                 fontSize: 16,
                 fontWeight: FontWeight.w400),
             isDense: true),

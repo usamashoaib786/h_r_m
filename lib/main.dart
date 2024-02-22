@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:hrm_project/View/HomePAge/home_screen.dart';
+import 'package:h_r_m/splash_screen.dart';
 import 'package:sizer/sizer.dart';
 
 Future<void> main() async {
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'HRM',
         theme: ThemeData(),
-        home: const LandingScreen(),
+        home: const SplashScreen(),
       );
     });
   }

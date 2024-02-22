@@ -1,8 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:hrm_project/Utils/resources/res/app_theme.dart';
-import 'package:hrm_project/Utils/widgets/others/app_text.dart';
+import 'package:h_r_m/Utils/resources/res/app_theme.dart';
+import 'package:h_r_m/Utils/widgets/others/app_text.dart';
 
 class AppButton {
   static Widget appButton(String text,
@@ -18,6 +17,7 @@ class AppButton {
       FontStyle? fontStyle,
       TextBaseline? textBaseline,
       TextOverflow? overflow,
+      var radius,
       double? letterSpacing,
       bool underLine = false,
       bool fontFamily = false,
@@ -40,7 +40,7 @@ class AppButton {
                   : BoxShadow()
             ],
             color: backgroundColor,
-            borderRadius: BorderRadius.circular(50),
+            borderRadius: BorderRadius.circular(radius == null? 10: radius),
             border: border == false
                 ? null
                 : Border.all(color: AppTheme.appColor, width: 1)),
@@ -159,11 +159,11 @@ class AppButton {
             // Image(
             //   // image: AssetImage(imagePath!),
             //   image:
-              SvgPicture.asset(
-                imagePath!,
-                height: 25,),
-            //   height: 25,
-            // ),
+            //   SvgPicture.asset(
+            //     imagePath!,
+            //     height: 25,),
+            // //   height: 25,
+            // // ),
             AppText.appText(text,
                 fontFamily: fontFamily,
                 fontSize: fontSize,

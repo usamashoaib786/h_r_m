@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 class AppTheme {
   AppTheme._();
 
-  static Color green = Color(0xff19A99D);
-  static Color appColor = Color(0xFFD74C23);
+  static Color green = const Color(0xff19A99D);
+  static Color appColor =
+      const Color(//     pushReplacement(context, BottomNavView());
+          0xffD74C23);
   static Color white = Colors.white;
   static Color whiteColor = Colors.white;
 

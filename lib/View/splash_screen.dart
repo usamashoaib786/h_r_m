@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:hrm_project/Utils/resources/res/app_theme.dart';
-import 'package:hrm_project/Utils/utils.dart';
-import 'package:hrm_project/Utils/widgets/others/app_text.dart';
-import 'package:hrm_project/View/Auth/sign_in_screen.dart';
-import 'package:hrm_project/config/keys/pref_keys.dart';
+import 'package:h_r_m/Utils/resources/res/app_theme.dart';
+import 'package:h_r_m/Utils/widgets/others/app_text.dart';
+import 'package:h_r_m/config/keys/pref_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {

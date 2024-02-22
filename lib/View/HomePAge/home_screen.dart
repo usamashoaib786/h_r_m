@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:hrm_project/Utils/resources/res/app_theme.dart';
-import 'package:hrm_project/Utils/utils.dart';
-import 'package:hrm_project/Utils/widgets/others/app_text.dart';
-import 'package:hrm_project/View/MarkAttendence/mark_attendence.dart';
+import 'package:h_r_m/Utils/resources/res/app_theme.dart';
+import 'package:h_r_m/Utils/utils.dart';
+import 'package:h_r_m/Utils/widgets/others/app_text.dart';
+import 'package:h_r_m/View/MarkAttendence/mark_attendence.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
@@ -21,118 +21,150 @@ class _LandingScreenState extends State<LandingScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(
-              height: 270,
+            Container(
               width: screenWidth,
-              child: Stack(
-                children: [
-                  Container(
-                    width: screenWidth,
-                    height: 210,
-                    decoration: BoxDecoration(
-                        color: AppTheme.appColor,
-                        borderRadius: const BorderRadius.only(
-                            bottomLeft: Radius.circular(50),
-                            bottomRight: Radius.circular(50))),
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.only(top: 50.0, left: 20, right: 20),
-                      child: Column(
+              height: 310,
+              decoration: BoxDecoration(
+                  color: AppTheme.appColor,
+                  borderRadius: const BorderRadius.only(
+                      bottomLeft: Radius.circular(190),
+                      bottomRight: Radius.circular(190))),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 40.0, left: 20, right: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Container(
+                              height: 80,
+                              width: 80,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(100),
+                                  color: AppTheme.white),
+                              child: const Center(
+                                child: Icon(
+                                  Icons.person,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            SizedBox(
+                              width: screenWidth * 0.55,
+                              child: Padding(
+                                padding: const EdgeInsets.only(top: 5.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    AppText.appText("Usama Shoaib",
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 18,
+                                        textColor: AppTheme.white),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        const Icon(
+                                          Icons.email_outlined,
+                                          color: Colors.white,
+                                          size: 15,
+                                        ),
+                                        const SizedBox(
+                                          width: 5,
+                                        ),
+                                        AppText.appText(
+                                            "usama.shoaib@digitalmandee.com",
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 10,
+                                            textColor: AppTheme.white),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 12.0),
+                          child: Image.asset("assets/images/logout.png"),
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    SizedBox(
+                      height: 70,
+                      width: screenWidth - 100,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              AppText.appText("Usama Shoaib",
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 18,
-                                  textColor: AppTheme.white),
-                              Image.asset("assets/images/logout.png")
+                              customRow(
+                                  img: "assets/images/designation.png",
+                                  txt1: "Dsignation",
+                                  txt2: " Flutter Developer"),
+                              customRow(
+                                  img: "assets/images/employee.png",
+                                  txt1: "Employee ID",
+                                  txt2: "DTM-53")
                             ],
                           ),
-                          const SizedBox(
-                            height: 5,
-                          ),
                           Container(
-                            height: 1,
-                            width: screenWidth,
-                            color: AppTheme.white,
+                            height: 80,
+                            width: 1,
+                            color: AppTheme.whiteColor,
+                          ),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              customRow(
+                                  img: "assets/images/department.png",
+                                  txt1: "Department",
+                                  txt2: "App Development"),
+                              customRow(
+                                  img: "assets/images/phone.png",
+                                  txt1: "Phone",
+                                  txt2: "03134598073")
+                            ],
                           )
                         ],
                       ),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0),
-                      child: Container(
-                        height: 141,
-                        width: screenWidth,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(24),
-                            color: const Color(0xff19A99D)),
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Column(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      customText(txt: "Flutter Developer"),
-                                      customText(
-                                          txt: "Application Development"),
-                                      customText(txt: "Employee Id: DTM-53"),
-                                      customText(txt: "+923134598073"),
-                                      customText(
-                                          txt:
-                                              "usama.shoaib@digitalmandee.com"),
-                                    ],
-                                  )
-                                ],
-                              ),
-                              Container(
-                                height: 80,
-                                width: 80,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(100),
-                                    color: AppTheme.white),
-                                child: const Center(
-                                  child: Icon(
-                                    Icons.person,
-                                    size: 60,
-                                  ),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                ],
+                    )
+                  ],
+                ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(top: 40, bottom: 40),
+              padding: const EdgeInsets.only(
+                  top: 40, bottom: 40, left: 20, right: 20),
               child: Wrap(
-                runSpacing: 20,
+                alignment: WrapAlignment.center,
+                runSpacing: 50,
                 spacing: 20,
                 children: [
                   customContainer(
                       bgColor: AppTheme.appColor,
                       onTap: () {
-                        push(context, MarkAttendenceScreen());
+                        push(context, const MarkAttendenceScreen());
                       },
                       txt: "Mark \nAttendance",
                       img: "assets/images/markAttendense.png"),
                   customContainer(
-                      bgColor: AppTheme.green,
+                      bgColor: AppTheme.appColor,
                       txt: "View \nAttendance",
                       img: "assets/images/viewAttendence.png"),
                   customContainer(
@@ -144,9 +176,17 @@ class _LandingScreenState extends State<LandingScreen> {
                       txt: "Leave \nQuota",
                       img: "assets/images/leaveQuota.png"),
                   customContainer(
-                      bgColor: AppTheme.appColor,
+                      bgColor: AppTheme.green,
                       txt: "Comming \nEvents",
                       img: "assets/images/notice.png"),
+                  customContainer(
+                      bgColor: AppTheme.green,
+                      txt: "Notice \nBoard",
+                      img: "assets/images/events.png"),
+                  customContainer(
+                      bgColor: AppTheme.appColor,
+                      txt: "Notice \nBoard",
+                      img: "assets/images/events.png"),
                   customContainer(
                       bgColor: AppTheme.green,
                       txt: "Notice \nBoard",
@@ -160,30 +200,25 @@ class _LandingScreenState extends State<LandingScreen> {
     );
   }
 
-  Widget customText({txt}) {
-    return AppText.appText("$txt",
-        textColor: AppTheme.white, fontSize: 11, fontWeight: FontWeight.w800);
-  }
-
   Widget customContainer({bgColor, txt, img, onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: 165,
-        height: 168,
+        width: 90,
+        height: 100,
         decoration: ShapeDecoration(
           color: bgColor,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(10),
           ),
         ),
         child: Padding(
-          padding: const EdgeInsets.only(top: 5.0, left: 5),
+          padding: const EdgeInsets.only(top: 2.0, left: 2),
           child: Container(
             decoration: ShapeDecoration(
               color: Colors.white,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(10),
               ),
               shadows: const [
                 BoxShadow(
@@ -198,26 +233,55 @@ class _LandingScreenState extends State<LandingScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Container(
-                  width: 75,
-                  height: 60,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10), color: bgColor),
-                  child: Center(
-                    child: Image(image: AssetImage("$img")),
-                  ),
-                ),
+                    width: 40,
+                    height: 30,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5), color: bgColor),
+                    child: Padding(
+                      padding: const EdgeInsets.all(6.0),
+                      child: Image.asset(
+                        "$img",
+                      ),
+                    )),
                 AppText.appText(
                   '$txt',
                   textAlign: TextAlign.center,
-                  textColor: Color(0xFF555555),
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
+                  textColor: const Color(0xFF555555),
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
                 )
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget customRow({img, txt1, txt2}) {
+    return Row(
+      children: [
+        Image.asset(
+          "$img",
+          height: 18,
+        ),
+        const SizedBox(
+          width: 7,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            AppText.appText("$txt1",
+                fontSize: 13,
+                textColor: AppTheme.whiteColor,
+                fontWeight: FontWeight.w700),
+            AppText.appText("$txt2",
+                fontSize: 9,
+                textColor: AppTheme.whiteColor,
+                fontWeight: FontWeight.w300),
+          ],
+        )
+      ],
     );
   }
 }

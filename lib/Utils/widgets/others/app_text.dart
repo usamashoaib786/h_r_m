@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hrm_project/Utils/resources/res/app_theme.dart';
+import 'package:h_r_m/Utils/resources/res/app_theme.dart';
 
 class AppText {
   static Widget  appText(String text,
