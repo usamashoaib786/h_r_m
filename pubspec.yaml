@@ -53,6 +53,8 @@ dependencies:
   geocoding: ^2.1.0
   google_maps_flutter: ^2.5.0
   location: ^5.0.3
+  table_calendar: ^3.0.8
+  expandable_text: ^2.3.0
 
 dev_dependencies:
   flutter_test:

@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:h_r_m/Utils/resources/res/app_theme.dart';
 import 'package:h_r_m/Utils/utils.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
+import 'package:h_r_m/View/Comming%20Events/coming_events.dart';
+import 'package:h_r_m/View/Company%20Profile/company_profile.dart';
+import 'package:h_r_m/View/Leave%20Quota/leave_quota.dart';
 import 'package:h_r_m/View/MarkAttendence/mark_attendence.dart';
+import 'package:h_r_m/View/Notice%20Board/notice_board.dart';
+import 'package:h_r_m/View/Request%20Leave/request_leave.dart';
+import 'package:h_r_m/View/Rules%20and%20Regulation/rule_regulation.dart';
+import 'package:h_r_m/View/View%20Attendence/view_attendence.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
@@ -157,40 +164,61 @@ class _LandingScreenState extends State<LandingScreen> {
                 spacing: 20,
                 children: [
                   customContainer(
-                      bgColor: AppTheme.appColor,
                       onTap: () {
                         push(context, const MarkAttendenceScreen());
                       },
+                      bgColor: AppTheme.appColor,
                       txt: "Mark \nAttendance",
-                      img: "assets/images/markAttendense.png"),
+                      img: "assets/images/fingerPrint.png"),
                   customContainer(
+                      onTap: () {
+                        push(context, const ViewAttendence());
+                      },
                       bgColor: AppTheme.appColor,
                       txt: "View \nAttendance",
-                      img: "assets/images/viewAttendence.png"),
+                      img: "assets/images/attendenceReq.png"),
                   customContainer(
+                      onTap: () {
+                        push(context, const RequestLeave());
+                      },
                       bgColor: AppTheme.appColor,
                       txt: "Request \nLeave",
-                      img: "assets/images/requestLeave.png"),
+                      img: "assets/images/leavereq.png"),
                   customContainer(
+                      onTap: () {
+                        push(context, const leaveQuotaScreen());
+                      },
                       bgColor: AppTheme.green,
                       txt: "Leave \nQuota",
                       img: "assets/images/leaveQuota.png"),
                   customContainer(
+                      onTap: () {
+                        push(context, const CommingEventsScreen());
+                      },
                       bgColor: AppTheme.green,
                       txt: "Comming \nEvents",
-                      img: "assets/images/notice.png"),
-                  customContainer(
-                      bgColor: AppTheme.green,
-                      txt: "Notice \nBoard",
                       img: "assets/images/events.png"),
                   customContainer(
+                      onTap: () {
+                        push(context, const CompanyProfileScreen());
+                      },
+                      bgColor: AppTheme.green,
+                      txt: "Company \nProfile",
+                      img: "assets/images/compProfile.png"),
+                  customContainer(
+                      onTap: () {
+                        push(context, const RulesRegulationScreen());
+                      },
                       bgColor: AppTheme.appColor,
-                      txt: "Notice \nBoard",
-                      img: "assets/images/events.png"),
+                      txt: "Rules & \nRegulations",
+                      img: "assets/images/rules.png"),
                   customContainer(
+                      onTap: () {
+                        push(context, const NoticeBoardScreen());
+                      },
                       bgColor: AppTheme.green,
                       txt: "Notice \nBoard",
-                      img: "assets/images/events.png"),
+                      img: "assets/images/notice.png"),
                 ],
               ),
             )
@@ -232,17 +260,24 @@ class _LandingScreenState extends State<LandingScreen> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Container(
-                    width: 40,
-                    height: 30,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5), color: bgColor),
-                    child: Padding(
-                      padding: const EdgeInsets.all(6.0),
-                      child: Image.asset(
-                        "$img",
-                      ),
-                    )),
+                Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Container(
+                      width: 40,
+                      height: 30,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Color(0xffF2F2F2)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: Image.asset(
+                          "$img",
+                        ),
+                      )),
+                ),
                 AppText.appText(
                   '$txt',
                   textAlign: TextAlign.center,
