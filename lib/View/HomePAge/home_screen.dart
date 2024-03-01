@@ -30,12 +30,13 @@ class _LandingScreenState extends State<LandingScreen> {
           children: [
             Container(
               width: screenWidth,
-              height: 310,
+              height: 280,
               decoration: BoxDecoration(
                   color: AppTheme.appColor,
                   borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(190),
-                      bottomRight: Radius.circular(190))),
+                      bottomLeft: Radius.circular(150),
+                      bottomRight: Radius.circular(150))
+                      ),
               child: Padding(
                 padding: const EdgeInsets.only(top: 40.0, left: 20, right: 20),
                 child: Column(

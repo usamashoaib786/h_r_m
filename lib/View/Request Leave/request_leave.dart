@@ -12,7 +12,7 @@ class RequestLeave extends StatefulWidget {
 }
 
 class _RequestLeaveState extends State<RequestLeave> {
-  String selectedRequestType = '';
+  String selectedRequestType = 'Annual Leave';
   DateTime? startDate;
   DateTime? endDate;
   TextEditingController _descController = TextEditingController();
@@ -26,7 +26,7 @@ class _RequestLeaveState extends State<RequestLeave> {
     });
   }
 
-  String selectedOption = ''; // Variable to store selected option
+  String selectedOption = 'half'; // Variable to store selected option
 
   void setSelectedOption(String option) {
     setState(() {
@@ -63,6 +63,7 @@ class _RequestLeaveState extends State<RequestLeave> {
             Expanded(
                 child: Card(
               elevation: 5,
+              color: AppTheme.whiteColor,
               shape: const RoundedRectangleBorder(
                   borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(70),
@@ -70,14 +71,16 @@ class _RequestLeaveState extends State<RequestLeave> {
               )),
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                decoration: const BoxDecoration(
-                    color: Colors.white12,
+                decoration:  BoxDecoration(
+                    color: AppTheme.whiteColor,
                     borderRadius: BorderRadius.only(
                       topLeft: Radius.circular(70),
                       topRight: Radius.circular(70),
                     )),
                 child: Padding(
-                  padding: const EdgeInsets.only(top: 30.0,),
+                  padding: const EdgeInsets.only(
+                    top: 30.0,
+                  ),
                   child: SingleChildScrollView(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -241,7 +244,8 @@ class _RequestLeaveState extends State<RequestLeave> {
                         ),
                         headText(txt: "Write Reason"),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal:20.0, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20.0, vertical: 10),
                           child: CustomTextField(
                             controller: _descController,
                             lines: 3,
@@ -249,7 +253,8 @@ class _RequestLeaveState extends State<RequestLeave> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20.0, vertical: 10),
                           child: AppButton.appButton("SUBMIT",
                               backgroundColor: AppTheme.appColor,
                               textColor: AppTheme.whiteColor,
@@ -286,6 +291,7 @@ class _RequestLeaveState extends State<RequestLeave> {
         height: 38,
         width: 80,
         decoration: BoxDecoration(
+          border: Border.all(color: Color(0xffE5E5E5), width: 1),
           color: requestType == selectedRequestType
               ? selectedColor
               : defaultColor, // Change color for selected container
