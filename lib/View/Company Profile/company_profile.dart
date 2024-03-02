@@ -237,9 +237,9 @@ class _CompanyProfileScreenState extends State<CompanyProfileScreen> {
                 txt:
                     "Leave requests must be made through the HRM system, requiring approval from the HOD followed by HR. ",
                 img: "assets/images/enterprise.png"),
-                const SizedBox(
-                  height: 40,
-                )
+            const SizedBox(
+              height: 40,
+            )
           ],
         ),
       ),

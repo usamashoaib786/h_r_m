@@ -4,6 +4,7 @@ import 'package:h_r_m/Utils/utils.dart';
 import 'package:h_r_m/Utils/widgets/others/app_button.dart';
 import 'package:h_r_m/Utils/widgets/others/app_field.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
+import 'package:h_r_m/View/Bottom%20Navigation%20bar/bottom_nav_view.dart';
 import 'package:h_r_m/View/HomePAge/home_screen.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -74,7 +75,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           controller: _passwordController,
                         ),
                         AppButton.appButton("LOGIN", onTap: () {
-                          push(context, LandingScreen());
+                          push(context, BottomNavView());
                         },
                             textColor: Colors.white,
                             fontSize: 22,

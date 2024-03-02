@@ -10,6 +10,7 @@ import 'package:h_r_m/View/Notice%20Board/notice_board.dart';
 import 'package:h_r_m/View/Request%20Leave/request_leave.dart';
 import 'package:h_r_m/View/Rules%20and%20Regulation/rule_regulation.dart';
 import 'package:h_r_m/View/View%20Attendence/view_attendence.dart';
+import 'package:h_r_m/View/popup.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
@@ -101,9 +102,20 @@ class _LandingScreenState extends State<LandingScreen> {
                             ),
                           ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 12.0),
-                          child: Image.asset("assets/images/logout.png"),
+                        GestureDetector(
+                          onTap: () {
+                              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const CustomPopUp(
+                    );
+                  },
+                );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 12.0),
+                            child: Image.asset("assets/images/logout.png"),
+                          ),
                         )
                       ],
                     ),
