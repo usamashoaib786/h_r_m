@@ -1,19 +1,14 @@
 class AppUrls {
-  static const String baseUrl = "http://3.20.184.62";
-  static const String spoonacularBaseUrl = "https://api.spoonacular.com";
-  static const String signUpUrl = "/api/register";
-  static const String loginUrl = "/api/login";
-  static const String updateUrl = "/api/user";
-  static const String forgetPasswordUrl = "/api/password/email";
-  static const String searchRecipe = "/api/search-recipe";
-  static const String store_chat = "/api/store-chat";
-  static const String get_chat = "/api/get-chat";
-  static const String verifyUrl = "/api/verify-otp";
-  static const String resetPasswordUrl = "/api/password/reset";
-  static const String logoutUrl = "/api/logout";
-  static const String searchParameterUrl = "/api/seach-parameters";
-  static const String getFavouriteRecipes = "/api/favourite-recipe";
-  static const String favouriteURl = "/api/favourite-recipe";
-  static const String unFavouriteURl = "/api/unfavourite-recipe";
-  static const String customerSupport = "/api/customer-support";
+  static const String baseUrl = "https://hr.digitalmandee.com/api/";
+  static const String logIn = "login";
+  static const String logOut = "logout";
+  static const String markAttendence = "employee/attendance/store";
+  static const String checkOut = "employee/attendance/checkout";
+  static const String getEmpProfile = "profile/user-profile/index";
+  static const String getLeaveTypes = "employee/leave_categories/index";
+  static const String requestLeave = "employee/leave_application/store";
+  static const String getLeavesQuota = "employee/leave_application/index";
+  static const String getAttendences = "employee/attendance/report";
+  static const String getNotices = "employee/notice/show";
+  static const String getEvents = "personal_events";
 }

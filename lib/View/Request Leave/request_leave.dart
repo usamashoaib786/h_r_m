@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:h_r_m/Constants/app_logger.dart';
 import 'package:h_r_m/Utils/resources/res/app_theme.dart';
+import 'package:h_r_m/Utils/utils.dart';
 import 'package:h_r_m/Utils/widgets/others/app_button.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
+import 'package:h_r_m/config/app_urls.dart';
+import 'package:h_r_m/config/dio/app_dio.dart';
 import 'package:intl/intl.dart';
 
 class RequestLeave extends StatefulWidget {
-  const RequestLeave({super.key});
+  final userId;
+  const RequestLeave({super.key, this.userId});
 
   @override
   State<RequestLeave> createState() => _RequestLeaveState();
@@ -15,27 +20,45 @@ class _RequestLeaveState extends State<RequestLeave> {
   String selectedRequestType = 'Annual Leave';
   DateTime? startDate;
   DateTime? endDate;
+  var leaveTypes;
+  var leaveTypeId = "3";
+  var leavedayType;
+
   TextEditingController _descController = TextEditingController();
   Color defaultColor =
       const Color(0xffFFFFFF); // Default color for all containers
   Color selectedColor = AppTheme.appColor; // Color for the selected container
 
-  void setSelectedRequestType(String requestType) {
+  void setSelectedRequestType({String? requestType, id}) {
     setState(() {
-      selectedRequestType = requestType;
+      selectedRequestType = requestType!;
+      leaveTypeId = id;
     });
   }
 
   String selectedOption = 'half'; // Variable to store selected option
 
-  void setSelectedOption(String option) {
+  void setSelectedOption({String? option, type}) {
     setState(() {
-      selectedOption = option;
+      selectedOption = option!;
+      leavedayType = type;
     });
+  }
+
+  bool _isLoading = false;
+  late AppDio dio;
+  AppLogger logger = AppLogger();
+  @override
+  void initState() {
+    dio = AppDio(context);
+    logger.init();
+    getleaveTypes();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    print("object$leaveTypeId");
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: AppTheme.white),
@@ -71,9 +94,9 @@ class _RequestLeaveState extends State<RequestLeave> {
               )),
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                decoration:  BoxDecoration(
+                decoration: BoxDecoration(
                     color: AppTheme.whiteColor,
-                    borderRadius: BorderRadius.only(
+                    borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(70),
                       topRight: Radius.circular(70),
                     )),
@@ -91,27 +114,24 @@ class _RequestLeaveState extends State<RequestLeave> {
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              buildRequestTypeContainer('Annual Leave'),
-                              buildRequestTypeContainer('Casual Leave'),
-                              buildRequestTypeContainer('Sick Leave'),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              buildRequestTypeContainer('Maternity'),
-                              buildRequestTypeContainer('Business Leave'),
-                              buildRequestTypeContainer('Unpaid Leave'),
-                            ],
+                          child: GridView.builder(
+                            shrinkWrap: true,
+                            itemCount: leaveTypes.length,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              mainAxisSpacing: 10,
+                              crossAxisSpacing: 20,
+                              childAspectRatio: 2.5,
+                              crossAxisCount: 3,
+                            ),
+                            itemBuilder: (context, index) {
+                              print("id${leaveTypes[index]["id"]}");
+                              return buildRequestTypeContainer(
+                                requestType:
+                                    "${leaveTypes[index]["leave_category"]}",
+                                id: "${leaveTypes[index]["id"]}",
+                              );
+                            },
                           ),
                         ),
                         const SizedBox(
@@ -231,8 +251,16 @@ class _RequestLeaveState extends State<RequestLeave> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            buildOptionContainer('Half-Day', 'half', 1),
-                            buildOptionContainer('Full-Day', 'full', 2),
+                            buildOptionContainer(
+                                text: 'Half-Day',
+                                option: 'half',
+                                radius: 1,
+                                type: 1),
+                            buildOptionContainer(
+                                text: 'Full-Day',
+                                option: 'full',
+                                radius: 2,
+                                type: 2),
                           ],
                         ),
                         const SizedBox(
@@ -255,7 +283,9 @@ class _RequestLeaveState extends State<RequestLeave> {
                         Padding(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 20.0, vertical: 10),
-                          child: AppButton.appButton("SUBMIT",
+                          child: AppButton.appButton("SUBMIT", onTap: () {
+                            leaveRequest();
+                          },
                               backgroundColor: AppTheme.appColor,
                               textColor: AppTheme.whiteColor,
                               height: 45),
@@ -282,16 +312,16 @@ class _RequestLeaveState extends State<RequestLeave> {
     );
   }
 
-  Widget buildRequestTypeContainer(String requestType) {
+  Widget buildRequestTypeContainer({String? requestType, id}) {
     return GestureDetector(
       onTap: () {
-        setSelectedRequestType(requestType);
+        setSelectedRequestType(requestType: requestType, id: id);
       },
       child: Container(
         height: 38,
         width: 80,
         decoration: BoxDecoration(
-          border: Border.all(color: Color(0xffE5E5E5), width: 1),
+          border: Border.all(color: const Color(0xffE5E5E5), width: 1),
           color: requestType == selectedRequestType
               ? selectedColor
               : defaultColor, // Change color for selected container
@@ -300,7 +330,7 @@ class _RequestLeaveState extends State<RequestLeave> {
         ),
         child: Center(
           child: Text(
-            requestType,
+            requestType!,
             style: TextStyle(
                 color: requestType == selectedRequestType
                     ? AppTheme.whiteColor
@@ -321,10 +351,11 @@ class _RequestLeaveState extends State<RequestLeave> {
     );
   }
 
-  Widget buildOptionContainer(String text, String option, int radius) {
+  Widget buildOptionContainer(
+      {String? text, String? option, int? radius, type}) {
     return GestureDetector(
       onTap: () {
-        setSelectedOption(option);
+        setSelectedOption(option: option, type: type);
       },
       child: Container(
         width: MediaQuery.of(context).size.width * 0.4,
@@ -341,7 +372,7 @@ class _RequestLeaveState extends State<RequestLeave> {
                     bottomRight: Radius.circular(8))),
         child: Center(
           child: Text(
-            text,
+            text!,
             style: TextStyle(
                 color: selectedOption == option ? AppTheme.white : Colors.black,
                 fontSize: 14,
@@ -405,6 +436,144 @@ class _RequestLeaveState extends State<RequestLeave> {
       });
     }
   }
+
+  void getleaveTypes() async {
+    setState(() {
+      _isLoading = true;
+    });
+    var response;
+    int responseCode200 = 200; // For successful request.
+    int responseCode400 = 400; // For Bad Request.
+    int responseCode401 = 401; // For Unauthorized access.
+    int responseCode404 = 404; // For For data not found
+    int responseCode422 = 422; // For For data not found
+
+    int responseCode500 = 500; // Internal server error.
+
+    try {
+      response = await dio.get(path: AppUrls.getLeaveTypes);
+      var responseData = response.data;
+      if (response.statusCode == responseCode400) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode401) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode404) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode500) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode422) {
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode200) {
+        if (responseData["status"] == false) {
+          showSnackBar(context, "${responseData["message"]}");
+          setState(() {
+            _isLoading = false;
+          });
+
+          return;
+        } else {
+          setState(() {
+            _isLoading = false;
+            leaveTypes = responseData["leave_categories"];
+          });
+        }
+      }
+    } catch (e) {
+      print("Something went Wrong ${e}");
+      showSnackBar(context, "Something went Wrong.");
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void leaveRequest() async {
+    setState(() {
+      _isLoading = true;
+    });
+    var response;
+    int responseCode200 = 200; // For successful request.
+    int responseCode400 = 400; // For Bad Request.
+    int responseCode401 = 401; // For Unauthorized access.
+    int responseCode404 = 404; // For For data not found
+    int responseCode422 = 422; // For For data not found
+
+    int responseCode500 = 500; // Internal server error.
+    Map<String, dynamic> params = {
+      "created_by": widget.userId,
+      "leave_category_id": leaveTypeId,
+      "start_date": startDate,
+      "end_date": endDate,
+      "leave_type": leavedayType,
+      "reason": _descController.text,
+    };
+    try {
+      response = await dio.post(path: AppUrls.requestLeave, data: params);
+      var responseData = response.data;
+      if (response.statusCode == responseCode400) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode401) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode404) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode500) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode422) {
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode200) {
+        if (responseData["status"] == false) {
+          showSnackBar(context, "${responseData["message"]}");
+          setState(() {
+            _isLoading = false;
+          });
+
+          return;
+        } else {
+          showSnackBar(context, "${responseData["message"]}");
+          setState(() {
+            startDate = null;
+            endDate = null;
+            _descController.clear();
+            _isLoading = false;
+          });
+        }
+      }
+    } catch (e) {
+      print("Something went Wrong ${e}");
+      showSnackBar(context, "Something went Wrong.");
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 }
 
 class CustomTextField extends StatefulWidget {
@@ -434,7 +603,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       decoration: InputDecoration(
         isDense: true,
         hintText: "${widget.hintText}",
-        hintStyle: TextStyle(
+        hintStyle: const TextStyle(
             color: Color(0xFF666666),
             fontSize: 14,
             fontFamily: 'Inter',

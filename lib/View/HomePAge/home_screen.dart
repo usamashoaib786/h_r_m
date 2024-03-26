@@ -11,6 +11,8 @@ import 'package:h_r_m/View/Request%20Leave/request_leave.dart';
 import 'package:h_r_m/View/Rules%20and%20Regulation/rule_regulation.dart';
 import 'package:h_r_m/View/View%20Attendence/view_attendence.dart';
 import 'package:h_r_m/View/popup.dart';
+import 'package:h_r_m/config/keys/pref_keys.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
@@ -20,11 +22,34 @@ class LandingScreen extends StatefulWidget {
 }
 
 class _LandingScreenState extends State<LandingScreen> {
+  String? empId;
+  String? empName;
+  String? empPhone;
+  String? empDesignation;
+  String? empDep;
+  String? empEmail;
+
+  @override
+  void initState() {
+    getUserDetail();
+    super.initState();
+  }
+
+  getUserDetail() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      empId = prefs.getString(PrefKey.id);
+      empName = prefs.getString(PrefKey.userName);
+      empEmail = prefs.getString(PrefKey.email);
+      empPhone = prefs.getString(PrefKey.phone);
+      empDesignation = prefs.getString(PrefKey.designation);
+      empDep = prefs.getString(PrefKey.department);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -36,8 +61,7 @@ class _LandingScreenState extends State<LandingScreen> {
                   color: AppTheme.appColor,
                   borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(150),
-                      bottomRight: Radius.circular(150))
-                      ),
+                      bottomRight: Radius.circular(150))),
               child: Padding(
                 padding: const EdgeInsets.only(top: 40.0, left: 20, right: 20),
                 child: Column(
@@ -73,7 +97,7 @@ class _LandingScreenState extends State<LandingScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    AppText.appText("Usama Shoaib",
+                                    AppText.appText("$empName",
                                         fontWeight: FontWeight.w800,
                                         fontSize: 18,
                                         textColor: AppTheme.white),
@@ -89,8 +113,7 @@ class _LandingScreenState extends State<LandingScreen> {
                                         const SizedBox(
                                           width: 5,
                                         ),
-                                        AppText.appText(
-                                            "usama.shoaib@digitalmandee.com",
+                                        AppText.appText("$empEmail",
                                             fontWeight: FontWeight.w400,
                                             fontSize: 10,
                                             textColor: AppTheme.white),
@@ -104,13 +127,12 @@ class _LandingScreenState extends State<LandingScreen> {
                         ),
                         GestureDetector(
                           onTap: () {
-                              showDialog(
-                  context: context,
-                  builder: (BuildContext context) {
-                    return const CustomPopUp(
-                    );
-                  },
-                );
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return const CustomPopUp();
+                              },
+                            );
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(top: 12.0),
@@ -135,11 +157,11 @@ class _LandingScreenState extends State<LandingScreen> {
                               customRow(
                                   img: "assets/images/designation.png",
                                   txt1: "Dsignation",
-                                  txt2: " Flutter Developer"),
+                                  txt2: "$empDesignation"),
                               customRow(
                                   img: "assets/images/employee.png",
                                   txt1: "Employee ID",
-                                  txt2: "DTM-53")
+                                  txt2: "DTM-$empId")
                             ],
                           ),
                           Container(
@@ -154,11 +176,11 @@ class _LandingScreenState extends State<LandingScreen> {
                               customRow(
                                   img: "assets/images/department.png",
                                   txt1: "Department",
-                                  txt2: "App Development"),
+                                  txt2: "$empDep"),
                               customRow(
                                   img: "assets/images/phone.png",
                                   txt1: "Phone",
-                                  txt2: "03134598073")
+                                  txt2: "$empPhone")
                             ],
                           )
                         ],
@@ -178,28 +200,44 @@ class _LandingScreenState extends State<LandingScreen> {
                 children: [
                   customContainer(
                       onTap: () {
-                        push(context, const MarkAttendenceScreen());
+                        push(
+                            context,
+                            MarkAttendenceScreen(
+                              userId: empId,
+                            ));
                       },
                       bgColor: AppTheme.appColor,
                       txt: "Mark \nAttendance",
                       img: "assets/images/fingerPrint.png"),
                   customContainer(
                       onTap: () {
-                        push(context, const ViewAttendence());
+                        push(
+                            context,
+                            ViewAttendence(
+                              userId: empId,
+                            ));
                       },
                       bgColor: AppTheme.appColor,
                       txt: "View \nAttendance",
                       img: "assets/images/attendenceReq.png"),
                   customContainer(
                       onTap: () {
-                        push(context, const RequestLeave());
+                        push(
+                            context,
+                            RequestLeave(
+                              userId: empId,
+                            ));
                       },
                       bgColor: AppTheme.appColor,
                       txt: "Request \nLeave",
                       img: "assets/images/leavereq.png"),
                   customContainer(
                       onTap: () {
-                        push(context, const leaveQuotaScreen());
+                        push(
+                            context,
+                            leaveQuotaScreen(
+                              userId: empId,
+                            ));
                       },
                       bgColor: AppTheme.green,
                       txt: "Leave \nQuota",
@@ -230,7 +268,7 @@ class _LandingScreenState extends State<LandingScreen> {
                         push(context, const NoticeBoardScreen());
                       },
                       bgColor: AppTheme.green,
-                      txt: "Notice \nBoard",
+                      txt: "Notice \n",
                       img: "assets/images/notice.png"),
                 ],
               ),
@@ -283,7 +321,7 @@ class _LandingScreenState extends State<LandingScreen> {
                       height: 30,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
-                          color: Color(0xffF2F2F2)),
+                          color: const Color(0xffF2F2F2)),
                       child: Padding(
                         padding: const EdgeInsets.all(6.0),
                         child: Image.asset(

@@ -1,7 +1,11 @@
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
+import 'package:h_r_m/Constants/app_logger.dart';
 import 'package:h_r_m/Utils/resources/res/app_theme.dart';
+import 'package:h_r_m/Utils/utils.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
+import 'package:h_r_m/config/app_urls.dart';
+import 'package:h_r_m/config/dio/app_dio.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class CommingEventsScreen extends StatefulWidget {
@@ -12,9 +16,19 @@ class CommingEventsScreen extends StatefulWidget {
 }
 
 class _CommingEventsScreenState extends State<CommingEventsScreen> {
-  final String longText =
-      "Define the problem or question that the brainstorming session will aim to address. The question should be clear and concise.";
   bool isExpanded = false;
+  bool _isLoading = false;
+  late AppDio dio;
+  var eventsDetail;
+  AppLogger logger = AppLogger();
+  @override
+  void initState() {
+    dio = AppDio(context);
+    logger.init();
+    getEvents();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -79,94 +93,167 @@ class _CommingEventsScreenState extends State<CommingEventsScreen> {
             const SizedBox(
               height: 20,
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 3,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        width: MediaQuery.of(context).size.width,
-                        child: Column(
+            _isLoading == true
+                ? Center(
+                    child: CircularProgressIndicator(
+                      color: AppTheme.appColor,
+                    ),
+                  )
+                : Expanded(
+                    child: ListView.builder(
+                      itemCount: eventsDetail.length,
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Container(
-                                  height: 8,
-                                  width: 8,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: AppTheme.appColor),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(2.0),
-                                    child: Container(
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Container(
                                         height: 8,
                                         width: 8,
                                         decoration: BoxDecoration(
                                             shape: BoxShape.circle,
-                                            color: AppTheme.white)),
+                                            color: AppTheme.appColor),
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(2.0),
+                                          child: Container(
+                                              height: 8,
+                                              width: 8,
+                                              decoration: BoxDecoration(
+                                                  shape: BoxShape.circle,
+                                                  color: AppTheme.white)),
+                                        ),
+                                      ),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
+                                      AppText.appText(
+                                        "${eventsDetail[index]["start_date"]} to ${eventsDetail[index]["start_date"]}",
+                                        textColor: const Color(0xff8F9BB3),
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w900,
+                                      ),
+                                    ],
                                   ),
-                                ),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                AppText.appText(
-                                  "10:00-13:00",
-                                  textColor: const Color(0xff8F9BB3),
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w900,
-                                ),
-                              ],
-                            ),
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(vertical: 10.0),
-                              child: AppText.appText(
-                                "Meeting With Sir Farhan",
-                                textColor: Colors.black,
-                                fontSize: 15,
-                                fontWeight: FontWeight.w500,
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 10.0),
+                                    child: AppText.appText(
+                                      "${eventsDetail[index]["personal_event"]}",
+                                      textColor: Colors.black,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                  ExpandableText(
+                                    "${eventsDetail[index]["personal_event_description"]}",
+                                    expandText: 'View More',
+                                    collapseText: 'View Less',
+                                    maxLines:
+                                        2, // Number of lines to show initially
+                                    expanded: isExpanded,
+                                    linkColor:
+                                        Colors.blue, // Customize link color
+                                    style: const TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xff8F9BB3)),
+                                  ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                  if (index <= 1)
+                                    Container(
+                                      height: 1,
+                                      width: MediaQuery.of(context).size.width,
+                                      color: const Color(0xff9C9C9C),
+                                    ),
+                                  const SizedBox(
+                                    height: 20,
+                                  ),
+                                ],
                               ),
-                            ),
-                            ExpandableText(
-                              longText,
-                              expandText: 'View More',
-                              collapseText: 'View Less',
-                              maxLines: 2, // Number of lines to show initially
-                              expanded: isExpanded,
-                              linkColor: Colors.blue, // Customize link color
-                              style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xff8F9BB3)),
-                            ),
-                            const SizedBox(
-                              height: 20,
-                            ),
-                            if (index <= 1)
-                              Container(
-                                height: 1,
-                                width: MediaQuery.of(context).size.width,
-                                color: const Color(0xff9C9C9C),
-                              ),
-                            const SizedBox(
-                              height: 20,
-                            ),
+                            )
                           ],
-                        ),
-                      )
-                    ],
-                  );
-                },
-              ),
-            )
+                        );
+                      },
+                    ),
+                  )
           ],
         ),
       ),
     );
+  }
+
+  void getEvents() async {
+    setState(() {
+      _isLoading = true;
+    });
+    var response;
+    int responseCode200 = 200; // For successful request.
+    int responseCode400 = 400; // For Bad Request.
+    int responseCode401 = 401; // For Unauthorized access.
+    int responseCode404 = 404; // For For data not found
+    int responseCode422 = 422; // For For data not found
+
+    int responseCode500 = 500; // Internal server error.
+
+    try {
+      response = await dio.get(path: AppUrls.getEvents);
+      var responseData = response.data;
+      if (response.statusCode == responseCode400) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode401) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode404) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode500) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode422) {
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode200) {
+        if (responseData["status"] == false) {
+          showSnackBar(context, "${responseData["message"]}");
+          setState(() {
+            _isLoading = false;
+          });
+
+          return;
+        } else {
+          setState(() {
+            _isLoading = false;
+            eventsDetail = responseData["events"];
+          });
+        }
+      }
+    } catch (e) {
+      print("Something went Wrong ${e}");
+      showSnackBar(context, "Something went Wrong.");
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 }

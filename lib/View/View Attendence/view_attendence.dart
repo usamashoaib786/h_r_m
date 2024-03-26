@@ -1,15 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:h_r_m/Constants/app_logger.dart';
 import 'package:h_r_m/Utils/resources/res/app_theme.dart';
+import 'package:h_r_m/Utils/utils.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
+import 'package:h_r_m/config/app_urls.dart';
+import 'package:h_r_m/config/dio/app_dio.dart';
+import 'package:intl/intl.dart';
 
 class ViewAttendence extends StatefulWidget {
-  const ViewAttendence({super.key});
+  final userId;
+  const ViewAttendence({super.key, this.userId});
 
   @override
   State<ViewAttendence> createState() => _ViewAttendenceState();
 }
 
 class _ViewAttendenceState extends State<ViewAttendence> {
+  bool _isLoading = false;
+  late AppDio dio;
+  AppLogger logger = AppLogger();
+  String? formattedDate;
+  String? _date;
+  var attendenceData;
+  @override
+  void initState() {
+    dio = AppDio(context);
+    logger.init();
+    getDate();
+    getAttendenceReport();
+    super.initState();
+  }
+
+  void getDate() {
+    setState(() {
+      var now = DateTime.now();
+      formattedDate = DateFormat('yyyy-MM-dd').format(now);
+      _date = DateFormat('MMMM yyyy').format(now);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +66,7 @@ class _ViewAttendenceState extends State<ViewAttendence> {
                   decoration: const BoxDecoration(color: Color(0xffF6F3F3)),
                   child: Center(
                     child: AppText.appText(
-                      "January - 2024",
+                      "$_date",
                       textColor: AppTheme.appColor,
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
@@ -46,31 +75,87 @@ class _ViewAttendenceState extends State<ViewAttendence> {
                 ),
               ),
             ),
-            CustomTable()
+            CustomTable(
+              data: attendenceData,
+              loading: _isLoading,
+            )
           ],
         ),
       ),
     );
   }
+
+  void getAttendenceReport() async {
+    setState(() {
+      _isLoading = true;
+    });
+    var response;
+    int responseCode200 = 200; // For successful request.
+    int responseCode400 = 400; // For Bad Request.
+    int responseCode401 = 401; // For Unauthorized access.
+    int responseCode404 = 404; // For For data not found
+    int responseCode422 = 422; // For For data not found
+    int responseCode500 = 500; // Internal server error.
+    Map<String, dynamic> params = {
+      "user_id": widget.userId,
+      "attendance_month": formattedDate,
+    };
+    try {
+      response = await dio.post(path: AppUrls.getAttendences, data: params);
+      var responseData = response.data;
+      if (response.statusCode == responseCode400) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode401) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode404) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode500) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode422) {
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode200) {
+        if (responseData["status"] == false) {
+          showSnackBar(context, "${responseData["message"]}");
+          setState(() {
+            _isLoading = false;
+          });
+
+          return;
+        } else {
+          setState(() {
+            attendenceData = responseData["attendances"];
+            _isLoading = false;
+          });
+        }
+      }
+    } catch (e) {
+      print("Something went Wrong ${e}");
+      showSnackBar(context, "Something went Wrong.");
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 }
 
 class CustomTable extends StatelessWidget {
-  // Sample data for the table rows
-  final List<Map<String, dynamic>> tableData = [
-    {
-      'date': '2024-02-26',
-      'timeIn': '09:00 AM',
-      'timeOut': '05:00 PM',
-      'status': 'Present'
-    },
-    {
-      'date': '2024-02-27',
-      'timeIn': '09:15 AM',
-      'timeOut': '05:30 PM',
-      'status': 'Present'
-    },
-    // Add more data as needed
-  ];
+  final data;
+  final loading;
+  CustomTable({super.key, this.data, this.loading});
 
   @override
   Widget build(BuildContext context) {
@@ -92,76 +177,87 @@ class CustomTable extends StatelessWidget {
             width: MediaQuery.of(context).size.width,
             color: const Color(0xff888888),
           ),
-          for (int i = 0; i < tableData.length; i++)
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
-                  child: Container(
-                    height: 54,
-                    decoration: BoxDecoration(
-                        color: Color(0xffF6F3F3),
-                        borderRadius: BorderRadius.circular(8)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          height: 41,
-                          width: 65,
-                          alignment: Alignment.center,
-                          child: Card(
-                            elevation: 5,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8)),
-                            child: Container(
-                              height: 42,
-                              width: 42,
-                              decoration: BoxDecoration(
-                                  color: const Color(0xffFFFFFF),
+          if (loading == true)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 70.0),
+              child: CircularProgressIndicator(
+                color: AppTheme.appColor,
+              ),
+            ),
+          if (loading == false)
+            for (int i = 0; i < data.length; i++)
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
+                    child: Container(
+                      height: 54,
+                      decoration: BoxDecoration(
+                          color: const Color(0xffF6F3F3),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            height: 41,
+                            width: 65,
+                            alignment: Alignment.center,
+                            child: Card(
+                              elevation: 5,
+                              shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8)),
-                              child: Padding(
-                                padding: const EdgeInsets.all(1.0),
-                                child: AppText.appText("01 Thurs",
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.w700,
-                                    textAlign: TextAlign.center),
+                              child: Container(
+                                height: 42,
+                                width: 42,
+                                decoration: BoxDecoration(
+                                    color: const Color(0xffFFFFFF),
+                                    borderRadius: BorderRadius.circular(8)),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(1.0),
+                                  child: AppText.appText("01 Thurs",
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      textAlign: TextAlign.center),
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                        headingContainer(
-                            txt: "${tableData[i]["timeIn"]}",
-                            weigth: FontWeight.w500,
-                            align: Alignment.center),
-                        headingContainer(
-                            txt: "${tableData[i]["timeOut"]}",
-                            weigth: FontWeight.w500,
-                            align: Alignment.center),
-                        Container(
-                          height: 40,
-                          width: 60,
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 5.0),
-                            child: Container(
-                              height: 37,
-                              width: 60,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(11),
-                                  color: AppTheme.green),
-                              child: Center(
-                                  child: AppText.appText("P",
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w700,
-                                      textColor: AppTheme.whiteColor)),
+                          headingContainer(
+                              txt: "${data[i]["check_in"]}",
+                              weigth: FontWeight.w500,
+                              align: Alignment.center),
+                          headingContainer(
+                              txt: "${data[i]["check_out"]}",
+                              weigth: FontWeight.w500,
+                              align: Alignment.center),
+                          Container(
+                            height: 40,
+                            width: 60,
+                            child: Padding(
+                              padding: const EdgeInsets.only(right: 5.0),
+                              child: Container(
+                                height: 37,
+                                width: 60,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(11),
+                                    color: AppTheme.green),
+                                child: Center(
+                                    child: AppText.appText(
+                                        data[i]["attendance_status"] == 1
+                                            ? "P"
+                                            : "A",
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
+                                        textColor: AppTheme.whiteColor)),
+                              ),
                             ),
-                          ),
-                        )
-                      ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
         ],
       ),
     );

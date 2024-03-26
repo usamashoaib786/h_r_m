@@ -1,6 +1,10 @@
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:h_r_m/Utils/utils.dart';
 import 'package:h_r_m/View/Auth/sign_in_screen.dart';
+import 'package:h_r_m/View/Bottom%20Navigation%20bar/bottom_nav_view.dart';
+import 'package:h_r_m/config/keys/pref_keys.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -15,24 +19,22 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
 
     Future.delayed(const Duration(seconds: 2), () {
-      pushReplacement(context, SignInScreen());
-
-      // getUserCredentials(context);
+      getUserCredentials(context);
     });
     // Use this method to get user credentials if needed
   }
 
-  // void getUserCredentials(BuildContext context) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
+  void getUserCredentials(BuildContext context) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-  //   String? token = prefs.getString(PrefKey.authorization);
+    String? token = prefs.getString(PrefKey.authorization);
 
-  //   if (token != null && token.isNotEmpty) {
-  //     pushReplacement(context, BottomNavView());
-  //   } else {
-  //     pushReplacement(context, const LogInScreen());
-  //   }
-  // }
+    if (token != null && token.isNotEmpty) {
+      pushReplacement(context, BottomNavView());
+    } else {
+      pushReplacement(context, SignInScreen());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

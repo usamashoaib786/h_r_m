@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:h_r_m/Constants/app_logger.dart';
 import 'package:h_r_m/Utils/resources/res/app_theme.dart';
+import 'package:h_r_m/Utils/utils.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
+import 'package:h_r_m/config/app_urls.dart';
+import 'package:h_r_m/config/dio/app_dio.dart';
 import 'package:intl/intl.dart';
 
 class MarkAttendenceScreen extends StatefulWidget {
-  const MarkAttendenceScreen({super.key});
+  final userId;
+  const MarkAttendenceScreen({super.key, this.userId});
 
   @override
   State<MarkAttendenceScreen> createState() => _MarkAttendenceScreenState();
@@ -13,14 +19,26 @@ class MarkAttendenceScreen extends StatefulWidget {
 class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
   bool home = false;
   bool office = true;
+  bool checkIn = true;
+
   String _currentTime = '';
   String _amPm = '';
-  String _day = '';
   String _date = '';
-
+  bool _isLoading = false;
+  var checkOffice = 0;
+  String? formattedTime;
+  String? formattedDate;
+  var lat;
+  var long;
+  late AppDio dio;
+  AppLogger logger = AppLogger();
+  @override
   @override
   void initState() {
+    dio = AppDio(context);
+    logger.init();
     _updateTime();
+    getUserLocation();
     super.initState();
   }
 
@@ -28,8 +46,30 @@ class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
     setState(() {
       var now = DateTime.now();
       _currentTime = DateFormat('h:mm').format(now);
+      formattedTime = DateFormat('HH:mm:ss').format(now);
+      print("formated$formattedTime");
+      formattedDate = DateFormat('yyyy-MM-dd').format(now);
       _date = DateFormat('EEEE, MMM dd, yyyy').format(now);
       _amPm = DateFormat('a').format(now);
+    });
+  }
+
+  Future<void> getUserLocation() async {
+    LocationPermission permission = await Geolocator.requestPermission();
+
+    if (permission == LocationPermission.denied) {
+      // Handle case when location permission is denied
+      return;
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    setState(() {
+      lat = position.latitude;
+      long = position.longitude;
+
+      print('Latitude: $lat, Longitude: $long');
     });
   }
 
@@ -47,7 +87,7 @@ class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
         ),
       ),
       body: Padding(
-        padding:  EdgeInsets.symmetric(vertical:  40.0,horizontal: 20),
+        padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
         child: Center(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -68,6 +108,7 @@ class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
                           setState(() {
                             home = !home;
                             office = !home;
+                            checkOffice = 0;
                           });
                         },
                         child: Container(
@@ -101,6 +142,7 @@ class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
                           setState(() {
                             home = !home;
                             office = !home;
+                            checkOffice = 1;
                           });
                         },
                         child: Container(
@@ -157,12 +199,17 @@ class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
                       ),
                       AppText.appText(_date,
                           fontSize: 20, fontWeight: FontWeight.w400),
-                           const SizedBox(
-                            height: 30,
-                          ),
-                      Image.asset(
-                        "assets/images/finger.png",
-                        height: 180,
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          markAttendence();
+                        },
+                        child: Image.asset(
+                          "assets/images/finger.png",
+                          height: 180,
+                        ),
                       ),
                     ],
                   ),
@@ -172,12 +219,26 @@ class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   customButton(
-                      txt: "Check In", color: AppTheme.appColor, ontap: () {}),
+                      txt: "Check In",
+                      color:
+                          checkIn == true ? AppTheme.appColor : AppTheme.green,
+                      ontap: () {
+                        setState(() {
+                          checkIn = true;
+                        });
+                      }),
                   const SizedBox(
                     width: 20,
                   ),
                   customButton(
-                      txt: "Check Out", color: AppTheme.green, ontap: () {}),
+                      txt: "Check Out",
+                      color:
+                          checkIn == false ? AppTheme.appColor : AppTheme.green,
+                      ontap: () {
+                        setState(() {
+                          checkIn = false;
+                        });
+                      }),
                 ],
               )
             ],
@@ -217,15 +278,97 @@ class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
       ),
     );
   }
+
+  void markAttendence() async {
+    print("object$home");
+    setState(() {
+      _isLoading = true;
+    });
+    var response;
+    int responseCode200 = 200; // For successful request.
+    int responseCode400 = 400; // For Bad Request.
+    int responseCode401 = 401; // For Unauthorized access.
+    int responseCode404 = 404; // For For data not found
+    int responseCode422 = 422; // For For data not found
+
+    int responseCode500 = 500; // Internal server error.
+    Map<String, dynamic> params = {
+      "user_id": widget.userId,
+      "attendance_date": formattedDate,
+      "attendance_status": 1,
+      "leave_category_id": 0,
+      "work_from_home": checkOffice,
+      "check_in": formattedTime,
+      "check_out": formattedTime,
+      "latitude": lat,
+      "longitude": long,
+    };
+    if (checkIn == true) {
+      if (home == true) {
+        params.remove("latitude");
+        params.remove("check_out");
+        params.remove("longitude");
+      } else {
+        params.remove("check_out");
+      }
+    } else {
+      if (home == true) {
+        params.remove("latitude");
+        params.remove("check_in");
+
+        params.remove("longitude");
+      } else {
+        params.remove("check_in");
+      }
+    }
+    try {
+      response = await dio.post(path: AppUrls.markAttendence, data: params);
+      var responseData = response.data;
+      if (response.statusCode == responseCode400) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode401) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode404) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode500) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode422) {
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode200) {
+        if (responseData["status"] == false) {
+          showSnackBar(context, "${responseData["message"]}");
+          setState(() {
+            _isLoading = false;
+          });
+
+          return;
+        } else {
+          showSnackBar(context, "${responseData["message"]}");
+          setState(() {
+            _isLoading = false;
+          });
+        }
+      }
+    } catch (e) {
+      print("Something went Wrong ${e}");
+      showSnackBar(context, "Something went Wrong.");
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 }
-  // isSelected: isSelected,
-  //           onPressed: (index) {
-  //             setState(() {
-  //               // Update the selection state
-  //               for (int buttonIndex = 0;
-  //                   buttonIndex < isSelected.length;
-  //                   buttonIndex++) {
-  //                 isSelected[buttonIndex] = buttonIndex == index;
-  //               }
-  //             });
-  //           },

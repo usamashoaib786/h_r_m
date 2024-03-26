@@ -56,6 +56,8 @@ dependencies:
   table_calendar: ^3.0.8
   expandable_text: ^2.3.0
   dots_indicator: ^3.0.0
+  device_info: ^2.0.3
+  device_info_plus: ^9.1.2
 
 dev_dependencies:
   flutter_test:
