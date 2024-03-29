@@ -7,6 +7,7 @@ import 'package:h_r_m/Utils/widgets/others/app_text.dart';
 import 'package:h_r_m/View/Auth/sign_in_screen.dart';
 import 'package:h_r_m/config/app_urls.dart';
 import 'package:h_r_m/config/dio/app_dio.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomPopUp extends StatefulWidget {
   const CustomPopUp({
@@ -139,7 +140,8 @@ class _CustomPopUpState extends State<CustomPopUp> {
           setState(() {
             _isLoading = false;
           });
-
+          SharedPreferences pref = await SharedPreferences.getInstance();
+          pref.clear();
           Navigator.pushAndRemoveUntil(
               context,
               MaterialPageRoute(
@@ -156,6 +158,4 @@ class _CustomPopUpState extends State<CustomPopUp> {
       });
     }
   }
-
-
 }

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:h_r_m/Utils/resources/res/app_theme.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
@@ -15,6 +14,7 @@ class AppButton {
       GestureTapCallback? onTap,
       FontWeight? fontWeight,
       FontStyle? fontStyle,
+      Color? borderColor,
       TextBaseline? textBaseline,
       TextOverflow? overflow,
       var radius,
@@ -40,10 +40,11 @@ class AppButton {
                   : BoxShadow()
             ],
             color: backgroundColor,
-            borderRadius: BorderRadius.circular(radius == null? 10: radius),
+            borderRadius: BorderRadius.circular(radius == null ? 10 : radius),
             border: border == false
                 ? null
-                : Border.all(color: AppTheme.appColor, width: 1)),
+                : Border.all(
+                    color: borderColor ?? AppTheme.appColor, width: 1)),
         child: AppText.appText(text,
             fontFamily: fontFamily,
             fontSize: fontSize,
@@ -73,6 +74,7 @@ class AppButton {
       TextBaseline? textBaseline,
       TextOverflow? overflow,
       double? letterSpacing,
+      Color? borderColor,
       Function()? onTap,
       IconData? icons,
       bool underLine = false,
@@ -90,7 +92,7 @@ class AppButton {
             border: border == false
                 ? null
                 : Border.all(
-                    color: AppTheme.appColor,
+                    color: borderColor ?? AppTheme.appColor,
                     width: 2,
                   )),
         child: Row(

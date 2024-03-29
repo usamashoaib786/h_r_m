@@ -1,4 +1,3 @@
-import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
 import 'package:h_r_m/Utils/utils.dart';
 import 'package:h_r_m/View/Auth/sign_in_screen.dart';

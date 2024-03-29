@@ -19,7 +19,7 @@ class PrefKey {
   static const String accountNumber = "account_number";
   static const String authorizationStatus = "authorization_status";
   static const String nottifyCount = "notifyCount";
-  static const String slug = "slug";
+  static const String userType= "userType";
   static const String email = "email";
   static const String password = "password";
   static const String phone = "phone";

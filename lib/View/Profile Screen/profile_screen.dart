@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:h_r_m/Constants/app_logger.dart';
@@ -8,7 +7,9 @@ import 'package:h_r_m/Utils/utils.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
 import 'package:h_r_m/config/app_urls.dart';
 import 'package:h_r_m/config/dio/app_dio.dart';
+import 'package:h_r_m/config/keys/pref_keys.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -23,12 +24,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isLoading = false;
   late AppDio dio;
   AppLogger logger = AppLogger();
+  var department;
   @override
   void initState() {
     dio = AppDio(context);
     logger.init();
     getEmpProfle();
     super.initState();
+  }
+
+  getUserDetail() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      department = prefs.getString(PrefKey.department);
+    });
   }
 
   pickImage() async {
@@ -65,39 +74,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     alignment: Alignment.bottomCenter,
                     child: GestureDetector(
                       onTap: () {
-                        // pickImage();
+                        pickImage();
                       },
                       child: Card(
                         elevation: 5,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(100)),
                         child: Container(
-                            height: 120,
-                            width: 120,
-                            decoration: BoxDecoration(
-                                color: AppTheme.white, shape: BoxShape.circle),
-                            child: _pickedFilePath != null
-                                ? ClipRRect(
-                                    borderRadius: BorderRadius.circular(100),
-                                    child: Image.file(
-                                      File(_pickedFilePath!),
-                                      width: 200,
-                                      height: 200,
-                                      fit: BoxFit.fill,
-                                    ),
-                                  )
-                                : profileDetail == null
-                                    ? null
-                                    : profileDetail["avatar"] == null
-                                        ? Padding(
-                                            padding: const EdgeInsets.all(20.0),
-                                            child: Image.asset(
-                                              "assets/images/profileImg.png",
-                                              height: 66,
-                                              width: 66,
-                                            ),
-                                          )
-                                        : Image.network("https://hr.digitalmandee.com/profile_picture/${profileDetail["avatar"]}")),
+                          height: 120,
+                          width: 120,
+                          decoration: BoxDecoration(
+                              color: AppTheme.white, shape: BoxShape.circle),
+                          child: _pickedFilePath != null
+                              ? ClipRRect(
+                                  borderRadius: BorderRadius.circular(100),
+                                  child: Image.file(
+                                    File(_pickedFilePath!),
+                                    width: 200,
+                                    height: 200,
+                                    fit: BoxFit.fill,
+                                  ),
+                                )
+                              : profileDetail == null
+                                  ? null
+                                  : profileDetail["avatar"] == null
+                                      ? Padding(
+                                          padding: const EdgeInsets.all(20.0),
+                                          child: Image.asset(
+                                            "assets/images/profileImg.png",
+                                            height: 66,
+                                            width: 66,
+                                          ),
+                                        )
+                                      : ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                          child: Image.network(
+                                            "https://hr.digitalmandee.com/profile_picture/${profileDetail["avatar"]}",
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ),
+                        ),
                       ),
                     ),
                   )
@@ -144,8 +161,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             img: "assets/images/designation1.png"),
                         customRow(
                             txt1: "Department",
-                            txt2:
-                                "${profileDetail["department"]["department"]}",
+                            txt2: "$department",
                             img: "assets/images/department1.png"),
                         customRow(
                             txt1: "Employee ID",
@@ -290,20 +306,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var pADD = profileDetail["present_address"].replaceAll('"', '');
     var perADD = profileDetail["permanent_address"].replaceAll('"', '');
 
-
-   File profilePhoto = File(_pickedFilePath!);
+    File profilePhoto = File(_pickedFilePath!);
     print("knefn$profilePhoto");
     var formData = FormData.fromMap({
-
       "name": name,
       "contact_no_one": contact,
       "gender": gender,
       "web": web,
       "avatar": await MultipartFile.fromFile(profilePhoto.path),
-      "date_of_birth": 2001-05-01,
+      "date_of_birth": dob,
       "present_address": pADD,
       "permanent_address": perADD,
-      
     });
 
     // print("name$name");
@@ -312,13 +325,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
     //   "contact_no_one": contact,
     //   "gender": gender,
     //   "web": web,
-    //   "avatar": _pickedFilePath,
-    //   "date_of_birth": dob,
+    //   "avatar": await MultipartFile.fromFile(profilePhoto.path),
+    //   "date_of_birth": "2001-05-01",
     //   "present_address": pADD,
     //   "permanent_address": perADD,
     // };
     try {
-      response = await dio.post(path: AppUrls.getEmpProfile, data: formData);
+      response = await dio.post(path: AppUrls.updateProfile, data: formData);
       var responseData = response.data;
       if (response.statusCode == responseCode400) {
         showSnackBar(context, "${responseData["message"]}");
@@ -353,9 +366,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
           return;
         } else {
+          showSnackBar(context, "Profile Update Successfully");
           setState(() {
             _isLoading = false;
-            profileDetail = responseData["user_id"];
           });
         }
       }

@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:h_r_m/Constants/app_logger.dart';
 import 'package:h_r_m/Utils/resources/res/app_theme.dart';
 import 'package:h_r_m/Utils/utils.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
 import 'package:h_r_m/View/Comming%20Events/coming_events.dart';
 import 'package:h_r_m/View/Company%20Profile/company_profile.dart';
+import 'package:h_r_m/View/Employee%20List/employee_list.dart';
+import 'package:h_r_m/View/HOD%20View%20Leaves/hod_view_leaves.dart';
 import 'package:h_r_m/View/Leave%20Quota/leave_quota.dart';
 import 'package:h_r_m/View/MarkAttendence/mark_attendence.dart';
 import 'package:h_r_m/View/Notice%20Board/notice_board.dart';
@@ -11,6 +14,8 @@ import 'package:h_r_m/View/Request%20Leave/request_leave.dart';
 import 'package:h_r_m/View/Rules%20and%20Regulation/rule_regulation.dart';
 import 'package:h_r_m/View/View%20Attendence/view_attendence.dart';
 import 'package:h_r_m/View/popup.dart';
+import 'package:h_r_m/config/app_urls.dart';
+import 'package:h_r_m/config/dio/app_dio.dart';
 import 'package:h_r_m/config/keys/pref_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,10 +33,17 @@ class _LandingScreenState extends State<LandingScreen> {
   String? empDesignation;
   String? empDep;
   String? empEmail;
-
+  String? userType;
+  bool _isLoading = false;
+  late AppDio dio;
+  AppLogger logger = AppLogger();
+  var profileDetail;
   @override
   void initState() {
+    dio = AppDio(context);
+    logger.init();
     getUserDetail();
+    getUserProfilePicture();
     super.initState();
   }
 
@@ -44,6 +56,7 @@ class _LandingScreenState extends State<LandingScreen> {
       empPhone = prefs.getString(PrefKey.phone);
       empDesignation = prefs.getString(PrefKey.designation);
       empDep = prefs.getString(PrefKey.department);
+      userType = prefs.getString(PrefKey.userType);
     });
   }
 
@@ -80,12 +93,19 @@ class _LandingScreenState extends State<LandingScreen> {
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(100),
                                   color: AppTheme.white),
-                              child: const Center(
-                                child: Icon(
-                                  Icons.person,
-                                  size: 20,
-                                ),
-                              ),
+                              child: profileDetail == null
+                                  ? const Center(
+                                      child: Icon(
+                                      Icons.person,
+                                      size: 20,
+                                    ))
+                                  : ClipRRect(
+                                      borderRadius: BorderRadius.circular(100),
+                                      child: Image.network(
+                                        "https://hr.digitalmandee.com/profile_picture/${profileDetail["avatar"]}",
+                                        fit: BoxFit.fill,
+                                      ),
+                                    ),
                             ),
                             const SizedBox(
                               width: 10,
@@ -231,6 +251,14 @@ class _LandingScreenState extends State<LandingScreen> {
                       bgColor: AppTheme.appColor,
                       txt: "Request \nLeave",
                       img: "assets/images/leavereq.png"),
+                  if (userType == "3")
+                    customContainer(
+                        onTap: () {
+                          push(context, const EmployeeListScreen());
+                        },
+                        bgColor: AppTheme.appColor,
+                        txt: "Employee \nList",
+                        img: "assets/images/leavereq.png"),
                   customContainer(
                       onTap: () {
                         push(
@@ -249,6 +277,14 @@ class _LandingScreenState extends State<LandingScreen> {
                       bgColor: AppTheme.green,
                       txt: "Comming \nEvents",
                       img: "assets/images/events.png"),
+                  if (userType == "3" || userType == "1")
+                    customContainer(
+                        onTap: () {
+                          push(context, const HodViewLeaves());
+                        },
+                        bgColor: AppTheme.appColor,
+                        txt: "View \nLeave Requests",
+                        img: "assets/images/leavereq.png"),
                   customContainer(
                       onTap: () {
                         push(context, const CompanyProfileScreen());
@@ -333,7 +369,7 @@ class _LandingScreenState extends State<LandingScreen> {
                   '$txt',
                   textAlign: TextAlign.center,
                   textColor: const Color(0xFF555555),
-                  fontSize: 11,
+                  fontSize: 10,
                   fontWeight: FontWeight.w700,
                 )
               ],
@@ -369,5 +405,71 @@ class _LandingScreenState extends State<LandingScreen> {
         )
       ],
     );
+  }
+
+  void getUserProfilePicture() async {
+    setState(() {
+      _isLoading = true;
+    });
+    var response;
+    int responseCode200 = 200; // For successful request.
+    int responseCode400 = 400; // For Bad Request.
+    int responseCode401 = 401; // For Unauthorized access.
+    int responseCode404 = 404; // For For data not found
+    int responseCode422 = 422; // For For data not found
+
+    int responseCode500 = 500; // Internal server error.
+
+    try {
+      response = await dio.get(
+        path: AppUrls.getEmpProfile,
+      );
+      var responseData = response.data;
+      if (response.statusCode == responseCode400) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode401) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode404) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode500) {
+        showSnackBar(context, "${responseData["message"]}");
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode422) {
+        setState(() {
+          _isLoading = false;
+        });
+      } else if (response.statusCode == responseCode200) {
+        if (responseData["status"] == false) {
+          showSnackBar(context, "${responseData["message"]}");
+          setState(() {
+            _isLoading = false;
+          });
+
+          return;
+        } else {
+          setState(() {
+            _isLoading = false;
+            profileDetail = responseData["user_id"];
+          });
+        }
+      }
+    } catch (e) {
+      print("Something went Wrong ${e}");
+      showSnackBar(context, "Something went Wrong.");
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 }

@@ -20,9 +20,10 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
-  var deviceIds;
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  String _deviceID = 'Loading...';
   bool _isLoading = false;
   late AppDio dio;
   AppLogger logger = AppLogger();
@@ -30,21 +31,16 @@ class _SignInScreenState extends State<SignInScreen> {
   void initState() {
     dio = AppDio(context);
     logger.init();
-    getDeviceId();
+    _getDeviceID();
     super.initState();
   }
 
-  void getDeviceId() async {
+  Future<void> _getDeviceID() async {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    String deviceId = '';
-
-    if (Theme.of(context).platform == TargetPlatform.android) {
-      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-      deviceId = androidInfo
-          .androidId; // or other unique identifier from AndroidDeviceInfo
-    }
+    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
     setState(() {
-      deviceIds = deviceId;
+      _deviceID = androidInfo.androidId;
+      print("neflfnnl$_deviceID");
     });
   }
 
@@ -52,7 +48,6 @@ class _SignInScreenState extends State<SignInScreen> {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -163,7 +158,7 @@ class _SignInScreenState extends State<SignInScreen> {
     Map<String, dynamic> params = {
       "email": _emailController.text,
       "password": _passwordController.text,
-      "device_id": "$deviceIds"
+      "device_id": _deviceID
     };
     try {
       response = await dio.post(path: AppUrls.logIn, data: params);
@@ -201,7 +196,9 @@ class _SignInScreenState extends State<SignInScreen> {
 
           return;
         } else {
-          showSnackBar(context, "${responseData["message"]}");
+          if (responseData["message"] != null) {
+            showSnackBar(context, "${responseData["message"]}");
+          }
           setState(() {
             _isLoading = false;
           });
@@ -213,6 +210,7 @@ class _SignInScreenState extends State<SignInScreen> {
             var designation = responseData["designation_title"];
             var department = responseData["departments"];
             var userPhone = responseData["user"]["contact_no_one"];
+            var userType = responseData["user"]["emp_type"];
             var id = user.toString();
             SharedPreferences prefs = await SharedPreferences.getInstance();
             prefs.setString(PrefKey.authorization, token ?? '');
@@ -222,6 +220,7 @@ class _SignInScreenState extends State<SignInScreen> {
             prefs.setString(PrefKey.phone, userPhone ?? '');
             prefs.setString(PrefKey.designation, designation ?? '');
             prefs.setString(PrefKey.department, department ?? '');
+            prefs.setString(PrefKey.userType, userType ?? '');
 
             Navigator.pushAndRemoveUntil(
                 context,
