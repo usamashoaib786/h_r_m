@@ -1,7 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:h_r_m/View/HomePAge/api.dart';
 import 'package:h_r_m/splash_screen.dart';
+import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
 
 Future<void> main() async {
@@ -16,11 +17,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     return Sizer(builder: (context, orientation, deviceType) {
-      return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'HRM',
-        theme: ThemeData(),
-        home: const SplashScreen(),
+      return MultiProvider(
+        providers: [
+          ChangeNotifierProvider<HomeApiProvider>(
+              create: (_) => HomeApiProvider()),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
+          title: 'HR Maverix',
+          theme: ThemeData(),
+          home: const SplashScreen(),
+        ),
       );
     });
   }

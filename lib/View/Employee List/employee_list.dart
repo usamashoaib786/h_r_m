@@ -45,7 +45,7 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
         iconTheme: IconThemeData(color: AppTheme.white),
         backgroundColor: AppTheme.appColor,
         title: AppText.appText(
-          "Mark Attendence",
+          "Employees List",
           textColor: AppTheme.white,
           fontSize: 16,
           fontWeight: FontWeight.w700,

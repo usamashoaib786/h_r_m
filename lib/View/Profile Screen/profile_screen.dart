@@ -5,10 +5,12 @@ import 'package:h_r_m/Constants/app_logger.dart';
 import 'package:h_r_m/Utils/resources/res/app_theme.dart';
 import 'package:h_r_m/Utils/utils.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
+import 'package:h_r_m/View/HomePAge/api.dart';
 import 'package:h_r_m/config/app_urls.dart';
 import 'package:h_r_m/config/dio/app_dio.dart';
 import 'package:h_r_m/config/keys/pref_keys.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -20,16 +22,15 @@ class ProfileScreen extends StatefulWidget {
 
 class _ProfileScreenState extends State<ProfileScreen> {
   var _pickedFilePath;
-  var profileDetail;
-  bool _isLoading = false;
   late AppDio dio;
+  bool isLoading = false;
   AppLogger logger = AppLogger();
   var department;
   @override
   void initState() {
     dio = AppDio(context);
     logger.init();
-    getEmpProfle();
+    getUserDetail();
     super.initState();
   }
 
@@ -37,6 +38,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       department = prefs.getString(PrefKey.department);
+      print("knf$department");
     });
   }
 
@@ -55,6 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final homeApi = Provider.of<HomeApiProvider>(context);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -95,9 +98,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                     fit: BoxFit.fill,
                                   ),
                                 )
-                              : profileDetail == null
+                              : homeApi.profileDetail == null
                                   ? null
-                                  : profileDetail["avatar"] == null
+                                  : homeApi.profileDetail["avatar"] == null
                                       ? Padding(
                                           padding: const EdgeInsets.all(20.0),
                                           child: Image.asset(
@@ -110,7 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                           borderRadius:
                                               BorderRadius.circular(100),
                                           child: Image.network(
-                                            "https://hr.digitalmandee.com/profile_picture/${profileDetail["avatar"]}",
+                                            "https://hr.digitalmandee.com/profile_picture/${homeApi.profileDetail["avatar"]}",
                                             fit: BoxFit.fill,
                                           ),
                                         ),
@@ -121,7 +124,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ],
               ),
             ),
-            profileDetail == null
+            homeApi.profileDetail == null
                 ? Padding(
                     padding: const EdgeInsets.symmetric(vertical: 40.0),
                     child: Center(
@@ -134,12 +137,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     padding: const EdgeInsets.only(top: 20.0, bottom: 30),
                     child: Column(
                       children: [
-                        AppText.appText("${profileDetail["name"]}",
+                        AppText.appText("${homeApi.profileDetail["name"]}",
                             fontSize: 22,
                             fontWeight: FontWeight.w600,
                             textColor: Colors.black),
                         AppText.appText(
-                            "${profileDetail["designation"]["designation"]}",
+                            "${homeApi.profileDetail["designation"]["designation"]}",
                             fontSize: 20,
                             fontWeight: FontWeight.w500,
                             textColor: Color(0xff8C8C8C)),
@@ -148,16 +151,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         ),
                         customRow(
                             txt1: "E-mail",
-                            txt2: "${profileDetail["email"]}",
+                            txt2: "${homeApi.profileDetail["email"]}",
                             img: "assets/images/mail.png"),
                         customRow(
                             txt1: "Phone Number",
-                            txt2: "${profileDetail["contact_no_one"]}",
+                            txt2: "${homeApi.profileDetail["contact_no_one"]}",
                             img: "assets/images/phone1.png"),
                         customRow(
                             txt1: "Designation",
                             txt2:
-                                "${profileDetail["designation"]["designation"]}",
+                                "${homeApi.profileDetail["designation"]["designation"]}",
                             img: "assets/images/designation1.png"),
                         customRow(
                             txt1: "Department",
@@ -165,7 +168,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             img: "assets/images/department1.png"),
                         customRow(
                             txt1: "Employee ID",
-                            txt2: "Employee ID.DTM-${profileDetail["id"]}",
+                            txt2:
+                                "Employee ID.DTM-${homeApi.profileDetail["id"]}",
                             img: "assets/images/person.png"),
                       ],
                     ),
@@ -220,75 +224,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  void getEmpProfle() async {
-    setState(() {
-      _isLoading = true;
-    });
-    var response;
-    int responseCode200 = 200; // For successful request.
-    int responseCode400 = 400; // For Bad Request.
-    int responseCode401 = 401; // For Unauthorized access.
-    int responseCode404 = 404; // For For data not found
-    int responseCode422 = 422; // For For data not found
-
-    int responseCode500 = 500; // Internal server error.
-
-    try {
-      response = await dio.get(
-        path: AppUrls.getEmpProfile,
-      );
-      var responseData = response.data;
-      if (response.statusCode == responseCode400) {
-        showSnackBar(context, "${responseData["message"]}");
-        setState(() {
-          _isLoading = false;
-        });
-      } else if (response.statusCode == responseCode401) {
-        showSnackBar(context, "${responseData["message"]}");
-        setState(() {
-          _isLoading = false;
-        });
-      } else if (response.statusCode == responseCode404) {
-        showSnackBar(context, "${responseData["message"]}");
-        setState(() {
-          _isLoading = false;
-        });
-      } else if (response.statusCode == responseCode500) {
-        showSnackBar(context, "${responseData["message"]}");
-        setState(() {
-          _isLoading = false;
-        });
-      } else if (response.statusCode == responseCode422) {
-        setState(() {
-          _isLoading = false;
-        });
-      } else if (response.statusCode == responseCode200) {
-        if (responseData["status"] == false) {
-          showSnackBar(context, "${responseData["message"]}");
-          setState(() {
-            _isLoading = false;
-          });
-
-          return;
-        } else {
-          setState(() {
-            _isLoading = false;
-            profileDetail = responseData["user_id"];
-          });
-        }
-      }
-    } catch (e) {
-      print("Something went Wrong ${e}");
-      showSnackBar(context, "Something went Wrong.");
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
   void updateProfile() async {
+    final homeApi = Provider.of<HomeApiProvider>(context, listen: false);
+
     setState(() {
-      _isLoading = true;
+      isLoading = true;
     });
     var response;
     int responseCode200 = 200; // For successful request.
@@ -296,15 +236,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
     int responseCode401 = 401; // For Unauthorized access.
     int responseCode404 = 404; // For For data not found
     int responseCode422 = 422; // For For data not found
-
+    print("object${homeApi.profileDetail["name"]}");
     int responseCode500 = 500; // Internal server error.
-    var name = profileDetail["name"].replaceAll('"', '');
-    var contact = profileDetail["contact_no_one"].replaceAll('"', '');
-    var gender = profileDetail["gender"].replaceAll('"', '');
-    var web = profileDetail["web"].replaceAll('"', '');
-    var dob = profileDetail["date_of_birth"].replaceAll('"', '');
-    var pADD = profileDetail["present_address"].replaceAll('"', '');
-    var perADD = profileDetail["permanent_address"].replaceAll('"', '');
+    var name = homeApi.profileDetail["name"].replaceAll('"', '');
+    var contact = homeApi.profileDetail["contact_no_one"].replaceAll('"', '');
+    var gender = homeApi.profileDetail["gender"].replaceAll('"', '');
+    var web = homeApi.profileDetail["web"]?.replaceAll('"', '');
+    var dob = homeApi.profileDetail["date_of_birth"].replaceAll('"', '');
+    var pADD = homeApi.profileDetail["present_address"].replaceAll('"', '');
+    var perADD = homeApi.profileDetail["permanent_address"].replaceAll('"', '');
 
     File profilePhoto = File(_pickedFilePath!);
     print("knefn$profilePhoto");
@@ -336,39 +276,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (response.statusCode == responseCode400) {
         showSnackBar(context, "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode401) {
         showSnackBar(context, "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode404) {
         showSnackBar(context, "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode500) {
         showSnackBar(context, "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode422) {
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode200) {
         if (responseData["status"] == false) {
           showSnackBar(context, "${responseData["message"]}");
           setState(() {
-            _isLoading = false;
+            isLoading = false;
           });
 
           return;
         } else {
           showSnackBar(context, "Profile Update Successfully");
           setState(() {
-            _isLoading = false;
+            isLoading = false;
           });
         }
       }
@@ -376,7 +316,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       print("Something went Wrong ${e}");
       showSnackBar(context, "Something went Wrong.");
       setState(() {
-        _isLoading = false;
+        isLoading = false;
       });
     }
   }

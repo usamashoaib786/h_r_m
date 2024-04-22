@@ -7,6 +7,7 @@ import 'package:h_r_m/View/Comming%20Events/coming_events.dart';
 import 'package:h_r_m/View/Company%20Profile/company_profile.dart';
 import 'package:h_r_m/View/Employee%20List/employee_list.dart';
 import 'package:h_r_m/View/HOD%20View%20Leaves/hod_view_leaves.dart';
+import 'package:h_r_m/View/HomePAge/api.dart';
 import 'package:h_r_m/View/Leave%20Quota/leave_quota.dart';
 import 'package:h_r_m/View/MarkAttendence/mark_attendence.dart';
 import 'package:h_r_m/View/Notice%20Board/notice_board.dart';
@@ -14,10 +15,8 @@ import 'package:h_r_m/View/Request%20Leave/request_leave.dart';
 import 'package:h_r_m/View/Rules%20and%20Regulation/rule_regulation.dart';
 import 'package:h_r_m/View/View%20Attendence/view_attendence.dart';
 import 'package:h_r_m/View/popup.dart';
-import 'package:h_r_m/config/app_urls.dart';
 import 'package:h_r_m/config/dio/app_dio.dart';
-import 'package:h_r_m/config/keys/pref_keys.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 
 class LandingScreen extends StatefulWidget {
   const LandingScreen({super.key});
@@ -27,41 +26,23 @@ class LandingScreen extends StatefulWidget {
 }
 
 class _LandingScreenState extends State<LandingScreen> {
-  String? empId;
-  String? empName;
-  String? empPhone;
-  String? empDesignation;
-  String? empDep;
-  String? empEmail;
-  String? userType;
-  bool _isLoading = false;
+  bool isLoading = false;
   late AppDio dio;
   AppLogger logger = AppLogger();
-  var profileDetail;
   @override
   void initState() {
     dio = AppDio(context);
     logger.init();
-    getUserDetail();
-    getUserProfilePicture();
-    super.initState();
-  }
+    final homeApi = Provider.of<HomeApiProvider>(context, listen: false);
+    homeApi.getUserProfile(dio: dio, context: context);
+    homeApi.getUserDetail();
 
-  getUserDetail() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      empId = prefs.getString(PrefKey.id);
-      empName = prefs.getString(PrefKey.userName);
-      empEmail = prefs.getString(PrefKey.email);
-      empPhone = prefs.getString(PrefKey.phone);
-      empDesignation = prefs.getString(PrefKey.designation);
-      empDep = prefs.getString(PrefKey.department);
-      userType = prefs.getString(PrefKey.userType);
-    });
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final homeApi = Provider.of<HomeApiProvider>(context);
     final screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       body: SingleChildScrollView(
@@ -93,7 +74,7 @@ class _LandingScreenState extends State<LandingScreen> {
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(100),
                                   color: AppTheme.white),
-                              child: profileDetail == null
+                              child: homeApi.profileDetail == null
                                   ? const Center(
                                       child: Icon(
                                       Icons.person,
@@ -102,7 +83,7 @@ class _LandingScreenState extends State<LandingScreen> {
                                   : ClipRRect(
                                       borderRadius: BorderRadius.circular(100),
                                       child: Image.network(
-                                        "https://hr.digitalmandee.com/profile_picture/${profileDetail["avatar"]}",
+                                        "https://hr.digitalmandee.com/profile_picture/${homeApi.profileDetail["avatar"]}",
                                         fit: BoxFit.fill,
                                       ),
                                     ),
@@ -117,7 +98,7 @@ class _LandingScreenState extends State<LandingScreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    AppText.appText("$empName",
+                                    AppText.appText("${homeApi.userName}",
                                         fontWeight: FontWeight.w800,
                                         fontSize: 18,
                                         textColor: AppTheme.white),
@@ -133,7 +114,7 @@ class _LandingScreenState extends State<LandingScreen> {
                                         const SizedBox(
                                           width: 5,
                                         ),
-                                        AppText.appText("$empEmail",
+                                        AppText.appText("${homeApi.userEmail}",
                                             fontWeight: FontWeight.w400,
                                             fontSize: 10,
                                             textColor: AppTheme.white),
@@ -176,12 +157,12 @@ class _LandingScreenState extends State<LandingScreen> {
                             children: [
                               customRow(
                                   img: "assets/images/designation.png",
-                                  txt1: "Dsignation",
-                                  txt2: "$empDesignation"),
+                                  txt1: "Designation",
+                                  txt2: "${homeApi.userDes}"),
                               customRow(
                                   img: "assets/images/employee.png",
                                   txt1: "Employee ID",
-                                  txt2: "DTM-$empId")
+                                  txt2: "DTM-${homeApi.empId}")
                             ],
                           ),
                           Container(
@@ -196,11 +177,11 @@ class _LandingScreenState extends State<LandingScreen> {
                               customRow(
                                   img: "assets/images/department.png",
                                   txt1: "Department",
-                                  txt2: "$empDep"),
+                                  txt2: "${homeApi.empDep}"),
                               customRow(
                                   img: "assets/images/phone.png",
                                   txt1: "Phone",
-                                  txt2: "$empPhone")
+                                  txt2: "${homeApi.userPhone}")
                             ],
                           )
                         ],
@@ -223,7 +204,7 @@ class _LandingScreenState extends State<LandingScreen> {
                         push(
                             context,
                             MarkAttendenceScreen(
-                              userId: empId,
+                              userId: homeApi.empDep,
                             ));
                       },
                       bgColor: AppTheme.appColor,
@@ -234,7 +215,7 @@ class _LandingScreenState extends State<LandingScreen> {
                         push(
                             context,
                             ViewAttendence(
-                              userId: empId,
+                              userId: homeApi.empId,
                             ));
                       },
                       bgColor: AppTheme.appColor,
@@ -245,13 +226,13 @@ class _LandingScreenState extends State<LandingScreen> {
                         push(
                             context,
                             RequestLeave(
-                              userId: empId,
+                              userId: homeApi.empId,
                             ));
                       },
                       bgColor: AppTheme.appColor,
                       txt: "Request \nLeave",
                       img: "assets/images/leavereq.png"),
-                  if (userType == "3")
+                  if (homeApi.userType == "3")
                     customContainer(
                         onTap: () {
                           push(context, const EmployeeListScreen());
@@ -264,7 +245,7 @@ class _LandingScreenState extends State<LandingScreen> {
                         push(
                             context,
                             leaveQuotaScreen(
-                              userId: empId,
+                              userId: homeApi.empId,
                             ));
                       },
                       bgColor: AppTheme.green,
@@ -277,7 +258,7 @@ class _LandingScreenState extends State<LandingScreen> {
                       bgColor: AppTheme.green,
                       txt: "Comming \nEvents",
                       img: "assets/images/events.png"),
-                  if (userType == "3" || userType == "1")
+                  if (homeApi.userType == "3" || homeApi.userType == "1")
                     customContainer(
                         onTap: () {
                           push(context, const HodViewLeaves());
@@ -405,71 +386,5 @@ class _LandingScreenState extends State<LandingScreen> {
         )
       ],
     );
-  }
-
-  void getUserProfilePicture() async {
-    setState(() {
-      _isLoading = true;
-    });
-    var response;
-    int responseCode200 = 200; // For successful request.
-    int responseCode400 = 400; // For Bad Request.
-    int responseCode401 = 401; // For Unauthorized access.
-    int responseCode404 = 404; // For For data not found
-    int responseCode422 = 422; // For For data not found
-
-    int responseCode500 = 500; // Internal server error.
-
-    try {
-      response = await dio.get(
-        path: AppUrls.getEmpProfile,
-      );
-      var responseData = response.data;
-      if (response.statusCode == responseCode400) {
-        showSnackBar(context, "${responseData["message"]}");
-        setState(() {
-          _isLoading = false;
-        });
-      } else if (response.statusCode == responseCode401) {
-        showSnackBar(context, "${responseData["message"]}");
-        setState(() {
-          _isLoading = false;
-        });
-      } else if (response.statusCode == responseCode404) {
-        showSnackBar(context, "${responseData["message"]}");
-        setState(() {
-          _isLoading = false;
-        });
-      } else if (response.statusCode == responseCode500) {
-        showSnackBar(context, "${responseData["message"]}");
-        setState(() {
-          _isLoading = false;
-        });
-      } else if (response.statusCode == responseCode422) {
-        setState(() {
-          _isLoading = false;
-        });
-      } else if (response.statusCode == responseCode200) {
-        if (responseData["status"] == false) {
-          showSnackBar(context, "${responseData["message"]}");
-          setState(() {
-            _isLoading = false;
-          });
-
-          return;
-        } else {
-          setState(() {
-            _isLoading = false;
-            profileDetail = responseData["user_id"];
-          });
-        }
-      }
-    } catch (e) {
-      print("Something went Wrong ${e}");
-      showSnackBar(context, "Something went Wrong.");
-      setState(() {
-        _isLoading = false;
-      });
-    }
   }
 }

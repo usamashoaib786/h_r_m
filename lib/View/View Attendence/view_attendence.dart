@@ -185,82 +185,103 @@ class CustomTable extends StatelessWidget {
               ),
             ),
           if (loading == false)
-            for (int i = 0; i < data.length; i++)
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10.0),
-                    child: Container(
-                      height: 54,
-                      decoration: BoxDecoration(
-                          color: const Color(0xffF6F3F3),
-                          borderRadius: BorderRadius.circular(8)),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            height: 41,
-                            width: 65,
-                            alignment: Alignment.center,
-                            child: Card(
-                              elevation: 5,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(8)),
-                              child: Container(
-                                height: 42,
-                                width: 42,
-                                decoration: BoxDecoration(
-                                    color: const Color(0xffFFFFFF),
-                                    borderRadius: BorderRadius.circular(8)),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(1.0),
-                                  child: AppText.appText("01 Thurs",
-                                      fontSize: 10,
-                                      fontWeight: FontWeight.w700,
-                                      textAlign: TextAlign.center),
+          
+            SizedBox(
+              height: MediaQuery.of(context).size.height - 218,
+              child: ListView.builder(
+                physics: const AlwaysScrollableScrollPhysics(),
+                shrinkWrap: true,
+                itemCount: data.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        child: Container(
+                          height: 54,
+                          decoration: BoxDecoration(
+                              color: const Color(0xffF6F3F3),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Container(
+                                height: 41,
+                                width: 65,
+                                alignment: Alignment.center,
+                                child: Card(
+                                  elevation: 5,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(8)),
+                                  child: Container(
+                                    height: 42,
+                                    width: 42,
+                                    decoration: BoxDecoration(
+                                        color: const Color(0xffFFFFFF),
+                                        borderRadius: BorderRadius.circular(8)),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 1, horizontal: 10),
+                                      child: AppText.appText(
+                                          convertDateFormat(
+                                              "${data[index]["attendance_date"]}"),
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.w700,
+                                          textAlign: TextAlign.center),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
-                          ),
-                          headingContainer(
-                              txt: "${data[i]["check_in"]}",
-                              weigth: FontWeight.w500,
-                              align: Alignment.center),
-                          headingContainer(
-                              txt: "${data[i]["check_out"]}",
-                              weigth: FontWeight.w500,
-                              align: Alignment.center),
-                          Container(
-                            height: 40,
-                            width: 60,
-                            child: Padding(
-                              padding: const EdgeInsets.only(right: 5.0),
-                              child: Container(
-                                height: 37,
+                              headingContainer(
+                                  txt: "${data[index]["check_in"]}",
+                                  weigth: FontWeight.w500,
+                                  align: Alignment.center),
+                              headingContainer(
+                                  txt: "${data[index]["check_out"]}",
+                                  weigth: FontWeight.w500,
+                                  align: Alignment.center),
+                              SizedBox(
+                                height: 40,
                                 width: 60,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(11),
-                                    color: AppTheme.green),
-                                child: Center(
-                                    child: AppText.appText(
-                                        data[i]["attendance_status"] == 1
-                                            ? "P"
-                                            : "A",
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700,
-                                        textColor: AppTheme.whiteColor)),
-                              ),
-                            ),
-                          )
-                        ],
+                                child: Padding(
+                                  padding: const EdgeInsets.only(right: 5.0),
+                                  child: Container(
+                                    height: 37,
+                                    width: 60,
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(11),
+                                        color: AppTheme.green),
+                                    child: Center(
+                                        child: AppText.appText(
+                                            data[index]["attendance_status"] ==
+                                                    "1"
+                                                ? "P"
+                                                : "A",
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w700,
+                                            textColor: AppTheme.whiteColor)),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
-                ],
+                    ],
+                  );
+                },
               ),
+            )
+       
         ],
       ),
     );
+  }
+
+  String convertDateFormat(String dateString) {
+    DateTime date = DateTime.parse(dateString);
+    String formattedDate = DateFormat("dd EE").format(date);
+    return formattedDate;
   }
 
   Widget headingContainer({

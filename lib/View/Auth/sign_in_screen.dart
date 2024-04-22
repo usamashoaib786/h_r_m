@@ -7,9 +7,11 @@ import 'package:h_r_m/Utils/widgets/others/app_button.dart';
 import 'package:h_r_m/Utils/widgets/others/app_field.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
 import 'package:h_r_m/View/Bottom%20Navigation%20bar/bottom_nav_view.dart';
+import 'package:h_r_m/View/HomePAge/api.dart';
 import 'package:h_r_m/config/app_urls.dart';
 import 'package:h_r_m/config/dio/app_dio.dart';
 import 'package:h_r_m/config/keys/pref_keys.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -144,6 +146,7 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   void signIn() async {
+
     setState(() {
       _isLoading = true;
     });
