@@ -157,9 +157,15 @@ class _CompanyProfileScreenState extends State<CompanyProfileScreen> {
 
   Widget headPage() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 40),
-      child: Image.asset(
-        "assets/images/heads.png",
+      padding: const EdgeInsets.symmetric(horizontal: 40),
+      child: Center(
+        child: SizedBox(
+          height: 300,
+          child: Image.asset(
+            "assets/images/hodImage.png",
+            fit: BoxFit.fill,
+          ),
+        ),
       ),
     );
   }
@@ -269,7 +275,7 @@ class _CompanyProfileScreenState extends State<CompanyProfileScreen> {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                child: Container(
+                child: SizedBox(
                   width: MediaQuery.of(context).size.width * 0.5,
                   child: AppText.appText("$txt",
                       fontSize: 12, fontWeight: FontWeight.w400),

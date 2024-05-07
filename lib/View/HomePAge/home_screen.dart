@@ -232,14 +232,6 @@ class _LandingScreenState extends State<LandingScreen> {
                       bgColor: AppTheme.appColor,
                       txt: "Request \nLeave",
                       img: "assets/images/leavereq.png"),
-                  if (homeApi.userType == "3")
-                    customContainer(
-                        onTap: () {
-                          push(context, const EmployeeListScreen());
-                        },
-                        bgColor: AppTheme.appColor,
-                        txt: "Employee \nList",
-                        img: "assets/images/leavereq.png"),
                   customContainer(
                       onTap: () {
                         push(
@@ -251,13 +243,14 @@ class _LandingScreenState extends State<LandingScreen> {
                       bgColor: AppTheme.green,
                       txt: "Leave \nQuota",
                       img: "assets/images/leaveQuota.png"),
-                  customContainer(
-                      onTap: () {
-                        push(context, const CommingEventsScreen());
-                      },
-                      bgColor: AppTheme.green,
-                      txt: "Comming \nEvents",
-                      img: "assets/images/events.png"),
+                  if (homeApi.userType == "3")
+                    customContainer(
+                        onTap: () {
+                          push(context, const EmployeeListScreen());
+                        },
+                        bgColor: AppTheme.appColor,
+                        txt: "Employee \nList",
+                        img: "assets/images/leavereq.png"),
                   if (homeApi.userType == "3" || homeApi.userType == "1")
                     customContainer(
                         onTap: () {
@@ -287,6 +280,13 @@ class _LandingScreenState extends State<LandingScreen> {
                       bgColor: AppTheme.green,
                       txt: "Notice \n",
                       img: "assets/images/notice.png"),
+                  customContainer(
+                      onTap: () {
+                        push(context, const CommingEventsScreen());
+                      },
+                      bgColor: AppTheme.green,
+                      txt: "Events \n",
+                      img: "assets/images/events.png"),
                 ],
               ),
             )

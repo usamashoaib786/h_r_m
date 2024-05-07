@@ -19,7 +19,7 @@ class _RulesRegulationScreenState extends State<RulesRegulationScreen> {
   ];
   final rulesList = [
     "All employees must maintain their employment status as defined in their employment contract.",
-    "Regular work hours are [insert hours].",
+    "Regular work hours are 11am to 8pm.",
     "All employees are entitled to [insert number] days of annual leave per year.",
     "Employees are expected to adhere to the company's code of conduct at all times.",
     "Employees are required to comply with all applicable laws and regulations in the performance of their duties.",
