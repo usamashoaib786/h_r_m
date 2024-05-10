@@ -161,7 +161,7 @@ class _SignInScreenState extends State<SignInScreen> {
     Map<String, dynamic> params = {
       "email": _emailController.text,
       "password": _passwordController.text,
-      "device_id": _deviceID
+      "device_id": "123"
     };
     try {
       response = await dio.post(path: AppUrls.logIn, data: params);
@@ -213,7 +213,7 @@ class _SignInScreenState extends State<SignInScreen> {
             var designation = responseData["designation_title"];
             var department = responseData["departments"];
             var userPhone = responseData["user"]["contact_no_one"];
-            var userType = responseData["user"]["emp_type"];
+            var userType = responseData["user"]["role"];
             var id = user.toString();
             SharedPreferences prefs = await SharedPreferences.getInstance();
             prefs.setString(PrefKey.authorization, token ?? '');

@@ -155,7 +155,7 @@ class _ViewAttendenceState extends State<ViewAttendence> {
 class CustomTable extends StatelessWidget {
   final data;
   final loading;
-  CustomTable({super.key, this.data, this.loading});
+  const CustomTable({super.key, this.data, this.loading});
 
   @override
   Widget build(BuildContext context) {
@@ -185,9 +185,8 @@ class CustomTable extends StatelessWidget {
               ),
             ),
           if (loading == false)
-          
             SizedBox(
-              height: MediaQuery.of(context).size.height - 218,
+              height: MediaQuery.of(context).size.height * 0.7,
               child: ListView.builder(
                 physics: const AlwaysScrollableScrollPhysics(),
                 shrinkWrap: true,
@@ -272,7 +271,6 @@ class CustomTable extends StatelessWidget {
                 },
               ),
             )
-       
         ],
       ),
     );
