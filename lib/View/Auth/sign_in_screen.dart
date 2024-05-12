@@ -161,7 +161,7 @@ class _SignInScreenState extends State<SignInScreen> {
     Map<String, dynamic> params = {
       "email": _emailController.text,
       "password": _passwordController.text,
-      "device_id": "123"
+      "device_id": _deviceID
     };
     try {
       response = await dio.post(path: AppUrls.logIn, data: params);

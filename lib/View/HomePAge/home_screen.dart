@@ -204,7 +204,7 @@ class _LandingScreenState extends State<LandingScreen> {
                         push(
                             context,
                             MarkAttendenceScreen(
-                              userId: homeApi.empDep,
+                              userId: homeApi.empId,
                             ));
                       },
                       bgColor: AppTheme.appColor,
