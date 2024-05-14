@@ -33,14 +33,14 @@ class AppButton {
         decoration: BoxDecoration(
             boxShadow: [
               blurContainer == true
-                  ? BoxShadow(
+                  ? const BoxShadow(
                       color: Colors.black26,
                       blurRadius: 2,
                       offset: Offset(0.0, 4))
-                  : BoxShadow()
+                  : const BoxShadow()
             ],
             color: backgroundColor,
-            borderRadius: BorderRadius.circular(radius == null ? 10 : radius),
+            borderRadius: BorderRadius.circular(radius ?? 10),
             border: border == false
                 ? null
                 : Border.all(
@@ -177,7 +177,7 @@ class AppButton {
                 textBaseline: textBaseline,
                 fontStyle: fontStyle,
                 underLine: underLine),
-            SizedBox(
+            const SizedBox(
               width: 20,
             ),
           ],

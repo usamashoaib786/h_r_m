@@ -1,8 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:h_r_m/Constants/app_logger.dart';
 import 'package:h_r_m/Utils/resources/res/app_theme.dart';
-import 'package:h_r_m/Utils/utils.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
 import 'package:h_r_m/config/app_urls.dart';
 import 'package:h_r_m/config/dio/app_dio.dart';
@@ -24,7 +25,7 @@ class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
   String _currentTime = '';
   String _amPm = '';
   String _date = '';
-  bool _isLoading = false;
+  bool isLoading = false;
   var checkOffice = 0;
   String? formattedTime;
   String? formattedDate;
@@ -116,7 +117,7 @@ class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
                           width: 107,
                           decoration: BoxDecoration(
                               color: office == true
-                                  ? const Color(0xffFFFFFFE5)
+                                  ? const Color(0xffffffffe5)
                                   : Colors.transparent,
                               borderRadius: BorderRadius.circular(35)),
                           child: Padding(
@@ -150,7 +151,7 @@ class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
                           width: 107,
                           decoration: BoxDecoration(
                               color: home == true
-                                  ? const Color(0xffFFFFFFE5)
+                                  ? const Color(0xffffffffe5)
                                   : Colors.transparent,
                               borderRadius: BorderRadius.circular(35)),
                           child: Padding(
@@ -280,11 +281,10 @@ class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
   }
 
   void markAttendence() async {
-    print("object$home");
     setState(() {
-      _isLoading = true;
+      isLoading = true;
     });
-    var response;
+    Response response;
     int responseCode200 = 200; // For successful request.
     int responseCode400 = 400; // For Bad Request.
     int responseCode401 = 401; // For Unauthorized access.
@@ -325,49 +325,48 @@ class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
       response = await dio.post(path: AppUrls.markAttendence, data: params);
       var responseData = response.data;
       if (response.statusCode == responseCode400) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode401) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode404) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode500) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode422) {
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode200) {
         if (responseData["status"] == false) {
-          showSnackBar(context, "${responseData["message"]}");
+          Fluttertoast.showToast(msg: "${responseData["message"]}");
           setState(() {
-            _isLoading = false;
+            isLoading = false;
           });
 
           return;
         } else {
-          showSnackBar(context, "${responseData["message"]}");
+          Fluttertoast.showToast(msg: "${responseData["message"]}");
           setState(() {
-            _isLoading = false;
+            isLoading = false;
           });
         }
       }
     } catch (e) {
-      print("Something went Wrong ${e}");
-      showSnackBar(context, "Something went Wrong.");
+      Fluttertoast.showToast(msg: "Something went Wrong.");
       setState(() {
-        _isLoading = false;
+        isLoading = false;
       });
     }
   }

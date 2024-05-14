@@ -1,12 +1,14 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:h_r_m/Constants/app_logger.dart';
 import 'package:h_r_m/Utils/resources/res/app_theme.dart';
-import 'package:h_r_m/Utils/utils.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:h_r_m/Utils/widgets/others/app_button.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
 import 'package:h_r_m/config/app_urls.dart';
 import 'package:h_r_m/config/dio/app_dio.dart';
 
+// ignore: camel_case_types
 class leaveQuotaScreen extends StatefulWidget {
   final userId;
   const leaveQuotaScreen({super.key, this.userId});
@@ -15,6 +17,7 @@ class leaveQuotaScreen extends StatefulWidget {
   State<leaveQuotaScreen> createState() => _leaveQuotaScreenState();
 }
 
+// ignore: camel_case_types
 class _leaveQuotaScreenState extends State<leaveQuotaScreen> {
   bool _isLoading = false;
   late AppDio dio;
@@ -198,7 +201,7 @@ class _leaveQuotaScreenState extends State<leaveQuotaScreen> {
                                           AppText.appText("Reason:    ",
                                               fontSize: 12,
                                               fontWeight: FontWeight.w600,
-                                              textColor: Color(0xff979696)),
+                                              textColor: const Color(0xff979696)),
                                           SizedBox(
                                             width: screenWidth - 155,
                                             child: AppText.appText(
@@ -260,7 +263,7 @@ class _leaveQuotaScreenState extends State<leaveQuotaScreen> {
     setState(() {
       _isLoading = true;
     });
-    var response;
+    Response response;
     int responseCode200 = 200; // For successful request.
     int responseCode400 = 400; // For Bad Request.
     int responseCode401 = 401; // For Unauthorized access.
@@ -273,22 +276,22 @@ class _leaveQuotaScreenState extends State<leaveQuotaScreen> {
       response = await dio.get(path: AppUrls.getLeavesQuota);
       var responseData = response.data;
       if (response.statusCode == responseCode400) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           _isLoading = false;
         });
       } else if (response.statusCode == responseCode401) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           _isLoading = false;
         });
       } else if (response.statusCode == responseCode404) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           _isLoading = false;
         });
       } else if (response.statusCode == responseCode500) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           _isLoading = false;
         });
@@ -298,7 +301,7 @@ class _leaveQuotaScreenState extends State<leaveQuotaScreen> {
         });
       } else if (response.statusCode == responseCode200) {
         if (responseData["status"] == false) {
-          showSnackBar(context, "${responseData["message"]}");
+          Fluttertoast.showToast(msg: "${responseData["message"]}");
           setState(() {
             _isLoading = false;
           });
@@ -314,8 +317,7 @@ class _leaveQuotaScreenState extends State<leaveQuotaScreen> {
         }
       }
     } catch (e) {
-      print("Something went Wrong ${e}");
-      showSnackBar(context, "Something went Wrong.");
+      Fluttertoast.showToast(msg: "Something went Wrong.");
       setState(() {
         _isLoading = false;
       });

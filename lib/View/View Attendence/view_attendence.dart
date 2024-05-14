@@ -1,9 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:h_r_m/Constants/app_logger.dart';
 import 'package:h_r_m/Utils/resources/res/app_theme.dart';
-import 'package:h_r_m/Utils/utils.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
 import 'package:h_r_m/config/app_urls.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:h_r_m/config/dio/app_dio.dart';
 import 'package:intl/intl.dart';
 
@@ -89,7 +90,7 @@ class _ViewAttendenceState extends State<ViewAttendence> {
     setState(() {
       _isLoading = true;
     });
-    var response;
+    Response response;
     int responseCode200 = 200; // For successful request.
     int responseCode400 = 400; // For Bad Request.
     int responseCode401 = 401; // For Unauthorized access.
@@ -104,22 +105,22 @@ class _ViewAttendenceState extends State<ViewAttendence> {
       response = await dio.post(path: AppUrls.getAttendences, data: params);
       var responseData = response.data;
       if (response.statusCode == responseCode400) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           _isLoading = false;
         });
       } else if (response.statusCode == responseCode401) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           _isLoading = false;
         });
       } else if (response.statusCode == responseCode404) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           _isLoading = false;
         });
       } else if (response.statusCode == responseCode500) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           _isLoading = false;
         });
@@ -129,7 +130,7 @@ class _ViewAttendenceState extends State<ViewAttendence> {
         });
       } else if (response.statusCode == responseCode200) {
         if (responseData["status"] == false) {
-          showSnackBar(context, "${responseData["message"]}");
+          Fluttertoast.showToast(msg: "${responseData["message"]}");
           setState(() {
             _isLoading = false;
           });
@@ -143,8 +144,7 @@ class _ViewAttendenceState extends State<ViewAttendence> {
         }
       }
     } catch (e) {
-      print("Something went Wrong ${e}");
-      showSnackBar(context, "Something went Wrong.");
+      Fluttertoast.showToast(msg: "Something went Wrong.");
       setState(() {
         _isLoading = false;
       });
@@ -290,12 +290,12 @@ class CustomTable extends StatelessWidget {
   }) {
     return Container(
       // color: Colors.amber,
-      alignment: align == null ? Alignment.centerLeft : align,
+      alignment: align ?? Alignment.centerLeft,
       height: 40,
       width: 65,
       child: AppText.appText("$txt",
-          fontSize: fontSize == null ? 12 : fontSize,
-          fontWeight: weigth == null ? FontWeight.w600 : weigth,
+          fontSize: fontSize ?? 12,
+          fontWeight: weigth ?? FontWeight.w600,
           textColor: Colors.black),
     );
   }

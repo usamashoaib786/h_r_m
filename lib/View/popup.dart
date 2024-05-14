@@ -1,8 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:h_r_m/Constants/app_logger.dart';
 import 'package:h_r_m/Utils/resources/res/app_theme.dart';
-import 'package:h_r_m/Utils/utils.dart';
 import 'package:h_r_m/Utils/widgets/others/app_button.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
 import 'package:h_r_m/View/Auth/sign_in_screen.dart';
 import 'package:h_r_m/config/app_urls.dart';
@@ -19,7 +20,7 @@ class CustomPopUp extends StatefulWidget {
 }
 
 class _CustomPopUpState extends State<CustomPopUp> {
-  bool _isLoading = false;
+  bool isLoading = false;
   late AppDio dio;
   AppLogger logger = AppLogger();
   @override
@@ -65,12 +66,12 @@ class _CustomPopUpState extends State<CustomPopUp> {
                         height: 30,
                         border: false,
                         width: 89,
-                        backgroundColor: Color(0xffBCACAC),
+                        backgroundColor: const Color(0xffBCACAC),
                         textColor: Colors.black,
                         fontSize: 14,
                         fontWeight: FontWeight.w700),
                     AppButton.appButton("Logout", onTap: () {
-                      logOut();
+                      logOut(context);
                     },
                         height: 30,
                         width: 89,
@@ -87,11 +88,11 @@ class _CustomPopUpState extends State<CustomPopUp> {
         ));
   }
 
-  void logOut() async {
+  void logOut(context) async {
     setState(() {
-      _isLoading = true;
+      isLoading = true;
     });
-    var response;
+    Response response;
     int responseCode200 = 200; // For successful request.
     int responseCode400 = 400; // For Bad Request.
     int responseCode401 = 401; // For Unauthorized access.
@@ -104,41 +105,41 @@ class _CustomPopUpState extends State<CustomPopUp> {
       response = await dio.get(path: AppUrls.logOut);
       var responseData = response.data;
       if (response.statusCode == responseCode400) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode401) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode404) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode500) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode422) {
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode200) {
         if (responseData["status"] == false) {
-          showSnackBar(context, "${responseData["message"]}");
+          Fluttertoast.showToast(msg: "${responseData["message"]}");
           setState(() {
-            _isLoading = false;
+            isLoading = false;
           });
 
           return;
         } else {
-          showSnackBar(context, "${responseData["message"]}");
+          Fluttertoast.showToast(msg: "${responseData["message"]}");
           setState(() {
-            _isLoading = false;
+            isLoading = false;
           });
           SharedPreferences pref = await SharedPreferences.getInstance();
           pref.clear();
@@ -151,10 +152,9 @@ class _CustomPopUpState extends State<CustomPopUp> {
         }
       }
     } catch (e) {
-      print("Something went Wrong ${e}");
-      showSnackBar(context, "Something went Wrong.");
+      Fluttertoast.showToast(msg: "Something went Wrong.");
       setState(() {
-        _isLoading = false;
+        isLoading = false;
       });
     }
   }

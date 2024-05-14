@@ -1,10 +1,11 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:h_r_m/Constants/app_logger.dart';
 import 'package:h_r_m/Utils/resources/res/app_theme.dart';
-import 'package:h_r_m/Utils/utils.dart';
 import 'package:h_r_m/Utils/widgets/others/app_button.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
 import 'package:h_r_m/config/app_urls.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:h_r_m/config/dio/app_dio.dart';
 import 'package:h_r_m/config/keys/pref_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -17,7 +18,7 @@ class HodViewLeaves extends StatefulWidget {
 }
 
 class _HodViewLeavesState extends State<HodViewLeaves> {
-  bool _isLoading = false;
+  bool isLoading = false;
   late AppDio dio;
   AppLogger logger = AppLogger();
   var leaveRequest;
@@ -35,9 +36,7 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
     userType = prefs.getString(PrefKey.userType);
     if (userType == "3") {
       getLeavesRequest(hr: false);
-    } else if (userType == "1") {
-      print("ke nfelfnenlfelfnlenflnelf;elf;ne;nf");
-    }
+    } else if (userType == "1") {}
   }
 
   @override
@@ -180,10 +179,7 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
                                           if (userType == "3") {
                                             aprovedByHod(
                                                 id: "${data["id"]}", hr: false);
-                                          } else if (userType == "1") {
-                                            print(
-                                                "ke nfelfnenlfelfnlenflnelf;elf;ne;nf");
-                                          }
+                                          } else if (userType == "1") {}
                                         },
                                             width: screenWidth * 0.3,
                                             radius: 16.0,
@@ -198,8 +194,6 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
                                             rejectByHod(
                                                 id: "${data["id"]}", hr: false);
                                           } else if (userType == "1") {
-                                            print(
-                                                "ke nfelfnenlfelfnlenflnelf;elf;ne;nf");
                                           }
                                         },
                                             width: screenWidth * 0.3,
@@ -228,9 +222,9 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
 
   void getLeavesRequest({hr}) async {
     setState(() {
-      _isLoading = true;
+      isLoading = true;
     });
-    var response;
+    Response response;
     int responseCode200 = 200; // For successful request.
     int responseCode400 = 400; // For Bad Request.
     int responseCode401 = 401; // For Unauthorized access.
@@ -245,61 +239,59 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
           : response = await dio.get(path: AppUrls.getHREmployeeLeaveRequests);
       var responseData = response.data;
       if (response.statusCode == responseCode400) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode401) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode404) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode500) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode422) {
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode200) {
         if (responseData["status"] == false) {
-          showSnackBar(context, "${responseData["message"]}");
+          Fluttertoast.showToast(msg: "${responseData["message"]}");
           setState(() {
-            _isLoading = false;
+            isLoading = false;
           });
 
           return;
         } else {
           setState(() {
-            _isLoading = false;
+            isLoading = false;
             leaveRequest = hr == false
                 ? responseData["leave_applications"]
                 : responseData["leavesApprovedByHod"];
-            print("object${leaveRequest.length}");
           });
         }
       }
     } catch (e) {
-      print("Something went Wrong ${e}");
-      showSnackBar(context, "Something went Wrong.");
+      Fluttertoast.showToast(msg: "Something went Wrong.");
       setState(() {
-        _isLoading = false;
+        isLoading = false;
       });
     }
   }
 
   void aprovedByHod({id, hr}) async {
     setState(() {
-      _isLoading = true;
+      isLoading = true;
     });
-    var response;
+    Response response;
     int responseCode200 = 200; // For successful request.
     int responseCode400 = 400; // For Bad Request.
     int responseCode401 = 401; // For Unauthorized access.
@@ -316,40 +308,40 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
           : response = await dio.post(path: AppUrls.approvedByHr, data: params);
       var responseData = response.data;
       if (response.statusCode == responseCode400) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode401) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode404) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode500) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode422) {
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode200) {
         if (responseData["status"] == false) {
-          showSnackBar(context, "${responseData["message"]}");
+          Fluttertoast.showToast(msg: "${responseData["message"]}");
           setState(() {
-            _isLoading = false;
+            isLoading = false;
           });
 
           return;
         } else {
           setState(() {
-            _isLoading = false;
+            isLoading = false;
             hr == false
                 ? getLeavesRequest(hr: false)
                 : getLeavesRequest(hr: true);
@@ -357,19 +349,18 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
         }
       }
     } catch (e) {
-      print("Something went Wrong ${e}");
-      showSnackBar(context, "Something went Wrong.");
+      Fluttertoast.showToast(msg: "Something went Wrong.");
       setState(() {
-        _isLoading = false;
+        isLoading = false;
       });
     }
   }
 
   void rejectByHod({id, hr}) async {
     setState(() {
-      _isLoading = true;
+      isLoading = true;
     });
-    var response;
+    Response response;
     int responseCode200 = 200; // For successful request.
     int responseCode400 = 400; // For Bad Request.
     int responseCode401 = 401; // For Unauthorized access.
@@ -386,40 +377,40 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
           : response = await dio.post(path: AppUrls.rejectByHr, data: params);
       var responseData = response.data;
       if (response.statusCode == responseCode400) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode401) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode404) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode500) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode422) {
         setState(() {
-          _isLoading = false;
+          isLoading = false;
         });
       } else if (response.statusCode == responseCode200) {
         if (responseData["status"] == false) {
-          showSnackBar(context, "${responseData["message"]}");
+          Fluttertoast.showToast(msg: "${responseData["message"]}");
           setState(() {
-            _isLoading = false;
+            isLoading = false;
           });
 
           return;
         } else {
           setState(() {
-            _isLoading = false;
+            isLoading = false;
             hr == false
                 ? getLeavesRequest(hr: false)
                 : getLeavesRequest(hr: true);
@@ -427,10 +418,9 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
         }
       }
     } catch (e) {
-      print("Something went Wrong ${e}");
-      showSnackBar(context, "Something went Wrong.");
+      Fluttertoast.showToast(msg: "Something went Wrong.");
       setState(() {
-        _isLoading = false;
+        isLoading = false;
       });
     }
   }

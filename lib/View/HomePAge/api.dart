@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:h_r_m/Utils/utils.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:h_r_m/config/app_urls.dart';
 import 'package:h_r_m/config/keys/pref_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -36,22 +36,22 @@ class HomeApiProvider extends ChangeNotifier {
       );
       var responseData = response.data;
       if (response.statusCode == responseCode400) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
 
         isLoading = false;
         notifyListeners();
       } else if (response.statusCode == responseCode401) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
 
         isLoading = false;
         notifyListeners();
       } else if (response.statusCode == responseCode404) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
 
         isLoading = false;
         notifyListeners();
       } else if (response.statusCode == responseCode500) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
 
         isLoading = false;
         notifyListeners();
@@ -60,7 +60,7 @@ class HomeApiProvider extends ChangeNotifier {
         notifyListeners();
       } else if (response.statusCode == responseCode200) {
         if (responseData["status"] == false) {
-          showSnackBar(context, "${responseData["message"]}");
+          Fluttertoast.showToast(msg: "${responseData["message"]}");
 
           isLoading = false;
           notifyListeners();
@@ -69,13 +69,11 @@ class HomeApiProvider extends ChangeNotifier {
         } else {
           isLoading = false;
           profileDetail = responseData["user_id"];
-          print("mgflf,l$profileDetail");
           notifyListeners();
         }
       }
     } catch (e) {
-      print("Something went Wrong ${e}");
-      showSnackBar(context, "Something went Wrong.");
+      Fluttertoast.showToast(msg: "Something went Wrong.");
 
       isLoading = false;
       notifyListeners();

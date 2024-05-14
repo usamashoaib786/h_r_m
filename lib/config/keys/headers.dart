@@ -7,5 +7,6 @@ class RequestHeader {
   static const String authorization = "Authorization";
   static const String bearer = "Bearer";
   static const String accept = "Accept";
+  // ignore: constant_identifier_names
   static const String content_type = "Content-Type";
 }

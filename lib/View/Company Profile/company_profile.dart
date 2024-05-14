@@ -256,7 +256,7 @@ class _CompanyProfileScreenState extends State<CompanyProfileScreen> {
     return Container(
       height: 1,
       width: MediaQuery.of(context).size.width,
-      color: Color(0xffCACACA),
+      color: const Color(0xffCACACA),
     );
   }
 

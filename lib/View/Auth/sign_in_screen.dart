@@ -1,17 +1,17 @@
 import 'package:device_info/device_info.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:h_r_m/Constants/app_logger.dart';
 import 'package:h_r_m/Utils/resources/res/app_theme.dart';
-import 'package:h_r_m/Utils/utils.dart';
 import 'package:h_r_m/Utils/widgets/others/app_button.dart';
 import 'package:h_r_m/Utils/widgets/others/app_field.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
 import 'package:h_r_m/View/Bottom%20Navigation%20bar/bottom_nav_view.dart';
-import 'package:h_r_m/View/HomePAge/api.dart';
 import 'package:h_r_m/config/app_urls.dart';
 import 'package:h_r_m/config/dio/app_dio.dart';
 import 'package:h_r_m/config/keys/pref_keys.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SignInScreen extends StatefulWidget {
@@ -42,14 +42,14 @@ class _SignInScreenState extends State<SignInScreen> {
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
     setState(() {
       _deviceID = androidInfo.androidId;
-      print("neflfnnl$_deviceID");
+      if (kDebugMode) {
+        print("neflfnnl$_deviceID");
+      }
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-    final screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -92,7 +92,7 @@ class _SignInScreenState extends State<SignInScreen> {
                           texthint: "Employee Email",
                           controller: _emailController,
                         ),
-                        CustomAppFormField(
+                        CustomAppPasswordfield(
                           prefixIcon: Icon(
                             Icons.lock,
                             size: 25,
@@ -113,17 +113,17 @@ class _SignInScreenState extends State<SignInScreen> {
                                       r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                                   if (!emailPattern
                                       .hasMatch(_emailController.text)) {
-                                    showSnackBar(context,
+                                    Fluttertoast.showToast(msg:
                                         "Please enter a valid email address");
                                   } else {
                                     if (_passwordController.text.isNotEmpty) {
-                                      signIn();
+                                      signIn(context);
                                     } else {
-                                      showSnackBar(context, "Enter Password");
+                                      Fluttertoast.showToast(msg: "Enter Password");
                                     }
                                   }
                                 } else {
-                                  showSnackBar(context, "Enter Email");
+                                  Fluttertoast.showToast(msg: "Enter Email");
                                 }
                               },
                                 textColor: Colors.white,
@@ -145,12 +145,11 @@ class _SignInScreenState extends State<SignInScreen> {
     );
   }
 
-  void signIn() async {
-
+  void signIn(context) async {
     setState(() {
       _isLoading = true;
     });
-    var response;
+    Response response;
     int responseCode200 = 200; // For successful request.
     int responseCode400 = 400; // For Bad Request.
     int responseCode401 = 401; // For Unauthorized access.
@@ -167,22 +166,22 @@ class _SignInScreenState extends State<SignInScreen> {
       response = await dio.post(path: AppUrls.logIn, data: params);
       var responseData = response.data;
       if (response.statusCode == responseCode400) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           _isLoading = false;
         });
       } else if (response.statusCode == responseCode401) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           _isLoading = false;
         });
       } else if (response.statusCode == responseCode404) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           _isLoading = false;
         });
       } else if (response.statusCode == responseCode500) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           _isLoading = false;
         });
@@ -192,7 +191,7 @@ class _SignInScreenState extends State<SignInScreen> {
         });
       } else if (response.statusCode == responseCode200) {
         if (responseData["status"] == false) {
-          showSnackBar(context, "${responseData["message"]}");
+          Fluttertoast.showToast(msg: "${responseData["message"]}");
           setState(() {
             _isLoading = false;
           });
@@ -200,12 +199,16 @@ class _SignInScreenState extends State<SignInScreen> {
           return;
         } else {
           if (responseData["message"] != null) {
-            showSnackBar(context, "${responseData["message"]}");
+            Fluttertoast.showToast(msg: "${responseData["message"]}");
+            setState(() {
+              _isLoading = false;
+            });
           }
-          setState(() {
-            _isLoading = false;
-          });
+
           if (responseData["message"] != "Invalid email or password!") {
+            setState(() {
+              _isLoading = false;
+            });
             var token = responseData["user"]["api_token"];
             var user = responseData["user"]["id"];
             var userName = responseData["user"]["name"];
@@ -217,7 +220,7 @@ class _SignInScreenState extends State<SignInScreen> {
             var id = user.toString();
             SharedPreferences prefs = await SharedPreferences.getInstance();
             prefs.setString(PrefKey.authorization, token ?? '');
-            prefs.setString(PrefKey.id, id ?? '');
+            prefs.setString(PrefKey.id, id);
             prefs.setString(PrefKey.userName, userName ?? '');
             prefs.setString(PrefKey.email, userEmail ?? '');
             prefs.setString(PrefKey.phone, userPhone ?? '');
@@ -235,8 +238,10 @@ class _SignInScreenState extends State<SignInScreen> {
         }
       }
     } catch (e) {
-      print("Something went Wrong ${e}");
-      showSnackBar(context, "Something went Wrong.");
+      if (kDebugMode) {
+        print("Something went Wrong $e");
+      }
+      Fluttertoast.showToast(msg: "Something went Wrong.");
       setState(() {
         _isLoading = false;
       });

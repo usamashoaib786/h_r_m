@@ -11,7 +11,7 @@ alertDialogError({context, message}) {
       return Padding(
         padding: EdgeInsets.only(left: 5.w, right: 5.w),
         child: AlertDialog(
-          actionsPadding: EdgeInsets.only(top: 5, left: 0, right: 0),
+          actionsPadding: const EdgeInsets.only(top: 5, left: 0, right: 0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
@@ -20,12 +20,12 @@ alertDialogError({context, message}) {
           backgroundColor: AppTheme.appColor,
           actionsAlignment: MainAxisAlignment.center,
           actions: [
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Center(
               child: AppText.appText(
-                "${message}",
+                "$message",
                 fontSize: 24,
                 textAlign: TextAlign.center,
                 textColor: AppTheme.whiteColor,
@@ -67,7 +67,7 @@ alertDialogErrorLogin({context, message}) {
       return Padding(
         padding: EdgeInsets.only(left: 5.w, right: 5.w),
         child: AlertDialog(
-          actionsPadding: EdgeInsets.only(top: 5, left: 0, right: 0),
+          actionsPadding: const EdgeInsets.only(top: 5, left: 0, right: 0),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8),
           ),
@@ -76,12 +76,12 @@ alertDialogErrorLogin({context, message}) {
           backgroundColor: AppTheme.appColor,
           actionsAlignment: MainAxisAlignment.center,
           actions: [
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Center(
               child: AppText.appText(
-                "${message}",
+                "$message",
                 fontSize: 24,
                 textAlign: TextAlign.center,
                 textColor: AppTheme.whiteColor,

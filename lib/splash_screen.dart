@@ -23,15 +23,15 @@ class _SplashScreenState extends State<SplashScreen> {
     // Use this method to get user credentials if needed
   }
 
-  void getUserCredentials(BuildContext context) async {
+  void getUserCredentials( context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String? token = prefs.getString(PrefKey.authorization);
 
     if (token != null && token.isNotEmpty) {
-      pushReplacement(context, BottomNavView());
+      pushReplacement(context, const BottomNavView());
     } else {
-      pushReplacement(context, SignInScreen());
+      pushReplacement(context, const SignInScreen());
     }
   }
 
@@ -39,7 +39,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(),
+        decoration: const BoxDecoration(),
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
         child: Align(

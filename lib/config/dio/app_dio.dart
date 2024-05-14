@@ -38,7 +38,7 @@ class AppDio {
     assert(initialize, "Dio not initialize, call the init() first");
     if (options != null) {
       options.contentType = Application.xFormUrlEncoded;
-      options..headers?.addAll({HttpHeaders.acceptHeader: Application.json});
+      options.headers?.addAll({HttpHeaders.acceptHeader: Application.json});
     } else {
       options = Options(
           contentType: Application.xFormUrlEncoded,
@@ -65,7 +65,7 @@ class AppDio {
     assert(initialize, "Dio not initialize, call the init() first");
     if (options != null) {
       options.contentType = Application.xFormUrlEncoded;
-      options..headers!.addAll({HttpHeaders.acceptHeader: Application.json});
+      options.headers!.addAll({HttpHeaders.acceptHeader: Application.json});
     } else {
       options = Options(
           contentType: Application.xFormUrlEncoded,
@@ -120,7 +120,7 @@ class AppDio {
     assert(initialize, "Dio not initialize, call the init() first");
     if (options != null) {
       options.contentType = Application.xFormUrlEncoded;
-      options..headers!.addAll({HttpHeaders.acceptHeader: Application.json});
+      options.headers!.addAll({HttpHeaders.acceptHeader: Application.json});
     } else {
       options = Options(
           contentType: Application.xFormUrlEncoded,
@@ -175,7 +175,7 @@ class AppDio {
     assert(initialize, "Dio not initialize, call the init() first");
     if (options != null) {
       options.contentType = Application.xFormUrlEncoded;
-      options..headers!.addAll({HttpHeaders.acceptHeader: Application.json});
+      options.headers!.addAll({HttpHeaders.acceptHeader: Application.json});
     } else {
       options = Options(
           contentType: Application.xFormUrlEncoded,
@@ -229,7 +229,7 @@ class AppDio {
   }) {
     assert(initialize, "Dio not initialize, call the init() first");
     if (options != null) {
-      options..headers!.addAll({HttpHeaders.acceptHeader: Application.json});
+      options.headers!.addAll({HttpHeaders.acceptHeader: Application.json});
     } else {
       options = Options(headers: {HttpHeaders.acceptHeader: Application.json});
     }

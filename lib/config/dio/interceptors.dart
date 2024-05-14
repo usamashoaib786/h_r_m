@@ -61,9 +61,9 @@ class AppDioInterceptor extends Interceptor {
       throw Exception("Base URL is not set");
     }
 
-    options..baseUrl = AppUrls.baseUrl;
+    options.baseUrl = AppUrls.baseUrl;
     if (token.isNotEmpty) {
-      options..headers.addAll({RequestHeader.authorization: "Bearer $token"});
+      options.headers.addAll({RequestHeader.authorization: "Bearer $token"});
     }
 
     Map<String, dynamic> er = {

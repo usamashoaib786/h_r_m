@@ -82,7 +82,7 @@ class _RulesRegulationScreenState extends State<RulesRegulationScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               AppText.appText(
-                                "${rulesHeading[index]}",
+                                rulesHeading[index],
                                 textColor: Colors.black,
                                 fontSize: 14,
                                 fontWeight: FontWeight.w600,
@@ -116,7 +116,7 @@ class _RulesRegulationScreenState extends State<RulesRegulationScreen> {
                                             MediaQuery.of(context).size.width -
                                                 98,
                                         child: AppText.appText(
-                                            "${rulesList[index]}",
+                                            rulesList[index],
                                             fontSize: 12,
                                             fontWeight: FontWeight.w500,
                                             textColor: const Color(0xff3F3F3F)),
@@ -146,7 +146,7 @@ class _RulesRegulationScreenState extends State<RulesRegulationScreen> {
                                             MediaQuery.of(context).size.width -
                                                 98,
                                         child: AppText.appText(
-                                            "${rules1List[index]}",
+                                            rules1List[index],
                                             fontSize: 12,
                                             fontWeight: FontWeight.w500,
                                             textColor: const Color(0xff3F3F3F)),

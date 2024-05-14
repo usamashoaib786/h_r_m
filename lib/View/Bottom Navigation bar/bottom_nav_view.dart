@@ -13,14 +13,14 @@ class BottomNavView extends StatefulWidget {
 class _BottomNavViewState extends State<BottomNavView> {
   var _currentIndex = 0;
   List screens = [
-    LandingScreen(),
-    ProfileScreen(),
+    const LandingScreen(),
+    const ProfileScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: Container(
+      bottomNavigationBar: SizedBox(
         height: 70,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 50.0),

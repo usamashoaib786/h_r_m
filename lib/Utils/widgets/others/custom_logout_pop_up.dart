@@ -18,10 +18,10 @@ showLogOutALert(BuildContext context, {controller}) {
               ),
               child: Column(
                 children: [
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  Text.rich(
+                  const Text.rich(
                     TextSpan(
                       children: [
                         TextSpan(
@@ -48,11 +48,11 @@ showLogOutALert(BuildContext context, {controller}) {
                     ),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
+                  const Padding(
+                    padding: EdgeInsets.all(8.0),
                     child: Divider(
                       thickness: 2,
                       // color: AppTheme.primaryColor,
@@ -61,7 +61,7 @@ showLogOutALert(BuildContext context, {controller}) {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      Text(
+                      const Text(
                         'Yes',
                         textAlign: TextAlign.center,
                         style: TextStyle(
@@ -77,7 +77,7 @@ showLogOutALert(BuildContext context, {controller}) {
                         width: 2,
                         color: AppTheme.whiteColor,
                       ),
-                      Text(
+                      const Text(
                         'No',
                         textAlign: TextAlign.center,
                         style: TextStyle(
@@ -90,7 +90,7 @@ showLogOutALert(BuildContext context, {controller}) {
                       )
                     ],
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 20,
                   ),
                 ],

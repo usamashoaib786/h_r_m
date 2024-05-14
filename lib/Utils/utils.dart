@@ -1,10 +1,9 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 
-showSnackBar(context, text) {
-  var snackBar = SnackBar(content: Text(text));
-  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-}
+// Fluttertoast.showToast(msg: text) {
+//   var snackBar = SnackBar(content: Text(text));
+//   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+// }
 
 push(context, screen) {
   Navigator.push(context, CupertinoPageRoute(builder: (_) => screen));

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:h_r_m/Constants/app_logger.dart';
 import 'package:h_r_m/Utils/resources/res/app_theme.dart';
-import 'package:h_r_m/Utils/utils.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
 import 'package:h_r_m/config/app_urls.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:h_r_m/config/dio/app_dio.dart';
 
 class NoticeBoardScreen extends StatefulWidget {
@@ -127,7 +127,7 @@ class _NoticeBoardScreenState extends State<NoticeBoardScreen> {
                                           vertical: 10.0),
                                       child: AppText.appText(
                                         "${noticeDetail[index]["notice_title"]}",
-                                        textColor: Color(0xff818283),
+                                        textColor: const Color(0xff818283),
                                         fontSize: 12,
                                         fontWeight: FontWeight.w500,
                                       ),
@@ -137,7 +137,7 @@ class _NoticeBoardScreenState extends State<NoticeBoardScreen> {
                                           "${noticeDetail[index]["description"]}",
                                           fontSize: 10,
                                           fontWeight: FontWeight.w500,
-                                          textColor: Color(0xff9F9EAB)),
+                                          textColor: const Color(0xff9F9EAB)),
                                     )
                                   ],
                                 ),
@@ -171,22 +171,22 @@ class _NoticeBoardScreenState extends State<NoticeBoardScreen> {
       response = await dio.get(path: AppUrls.getNotices);
       var responseData = response.data;
       if (response.statusCode == responseCode400) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           _isLoading = false;
         });
       } else if (response.statusCode == responseCode401) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           _isLoading = false;
         });
       } else if (response.statusCode == responseCode404) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           _isLoading = false;
         });
       } else if (response.statusCode == responseCode500) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           _isLoading = false;
         });
@@ -196,7 +196,7 @@ class _NoticeBoardScreenState extends State<NoticeBoardScreen> {
         });
       } else if (response.statusCode == responseCode200) {
         if (responseData["status"] == false) {
-          showSnackBar(context, "${responseData["message"]}");
+          Fluttertoast.showToast(msg: "${responseData["message"]}");
           setState(() {
             _isLoading = false;
           });
@@ -210,8 +210,7 @@ class _NoticeBoardScreenState extends State<NoticeBoardScreen> {
         }
       }
     } catch (e) {
-      print("Something went Wrong ${e}");
-      showSnackBar(context, "Something went Wrong.");
+      Fluttertoast.showToast(msg: "Something went Wrong.");
       setState(() {
         _isLoading = false;
       });

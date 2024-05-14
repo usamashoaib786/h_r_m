@@ -3,10 +3,10 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:h_r_m/Constants/app_logger.dart';
 import 'package:h_r_m/Utils/resources/res/app_theme.dart';
-import 'package:h_r_m/Utils/utils.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
 import 'package:h_r_m/View/HomePAge/api.dart';
 import 'package:h_r_m/config/app_urls.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:h_r_m/config/dio/app_dio.dart';
 import 'package:h_r_m/config/keys/pref_keys.dart';
 import 'package:image_picker/image_picker.dart';
@@ -21,7 +21,7 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  var _pickedFilePath;
+  String? _pickedFilePath;
   late AppDio dio;
   bool isLoading = false;
   AppLogger logger = AppLogger();
@@ -49,7 +49,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (image != null) {
       setState(() {
         _pickedFilePath = image.path;
-        print("electedfilePath${_pickedFilePath}");
         updateProfile();
       });
     }
@@ -145,7 +144,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             "${homeApi.profileDetail["designation"]["designation"]}",
                             fontSize: 20,
                             fontWeight: FontWeight.w500,
-                            textColor: Color(0xff8C8C8C)),
+                            textColor: const Color(0xff8C8C8C)),
                         const SizedBox(
                           height: 20,
                         ),
@@ -208,11 +207,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 children: [
                   AppText.appText("$txt1",
                       fontSize: 16,
-                      textColor: Color(0xff1A1A1A),
+                      textColor: const Color(0xff1A1A1A),
                       fontWeight: FontWeight.w500),
                   AppText.appText("$txt2",
                       fontSize: 14,
-                      textColor: Color(0xff515151),
+                      textColor: const Color(0xff515151),
                       fontWeight: FontWeight.w400),
                 ],
               )
@@ -230,13 +229,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       isLoading = true;
     });
-    var response;
+    Response response;
     int responseCode200 = 200; // For successful request.
     int responseCode400 = 400; // For Bad Request.
     int responseCode401 = 401; // For Unauthorized access.
     int responseCode404 = 404; // For For data not found
     int responseCode422 = 422; // For For data not found
-    print("object${homeApi.profileDetail["name"]}");
     int responseCode500 = 500; // Internal server error.
     var name = homeApi.profileDetail["name"].replaceAll('"', '');
     var contact = homeApi.profileDetail["contact_no_one"].replaceAll('"', '');
@@ -247,7 +245,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     var perADD = homeApi.profileDetail["permanent_address"].replaceAll('"', '');
 
     File profilePhoto = File(_pickedFilePath!);
-    print("knefn$profilePhoto");
     var formData = FormData.fromMap({
       "name": name,
       "contact_no_one": contact,
@@ -274,22 +271,22 @@ class _ProfileScreenState extends State<ProfileScreen> {
       response = await dio.post(path: AppUrls.updateProfile, data: formData);
       var responseData = response.data;
       if (response.statusCode == responseCode400) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           isLoading = false;
         });
       } else if (response.statusCode == responseCode401) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           isLoading = false;
         });
       } else if (response.statusCode == responseCode404) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           isLoading = false;
         });
       } else if (response.statusCode == responseCode500) {
-        showSnackBar(context, "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "${responseData["message"]}");
         setState(() {
           isLoading = false;
         });
@@ -299,22 +296,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
         });
       } else if (response.statusCode == responseCode200) {
         if (responseData["status"] == false) {
-          showSnackBar(context, "${responseData["message"]}");
+          Fluttertoast.showToast(msg: "${responseData["message"]}");
           setState(() {
             isLoading = false;
           });
 
           return;
         } else {
-          showSnackBar(context, "Profile Update Successfully");
+          Fluttertoast.showToast(msg: "Profile Update Successfully");
           setState(() {
             isLoading = false;
           });
         }
       }
     } catch (e) {
-      print("Something went Wrong ${e}");
-      showSnackBar(context, "Something went Wrong.");
+      Fluttertoast.showToast(msg: "Something went Wrong.");
       setState(() {
         isLoading = false;
       });
