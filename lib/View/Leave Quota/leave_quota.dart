@@ -203,7 +203,7 @@ class _leaveQuotaScreenState extends State<leaveQuotaScreen> {
                                               fontWeight: FontWeight.w600,
                                               textColor: const Color(0xff979696)),
                                           SizedBox(
-                                            width: screenWidth - 155,
+                                            width: screenWidth * 0.6,
                                             child: AppText.appText(
                                                 "${leaveApplication[index]["reason"]}",
                                                 fontSize: 12,

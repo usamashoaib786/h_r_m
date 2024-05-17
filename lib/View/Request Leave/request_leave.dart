@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:h_r_m/Constants/app_logger.dart';
@@ -158,94 +160,134 @@ class _RequestLeaveState extends State<RequestLeave> {
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceBetween,
                                   children: [
-                                    GestureDetector(
-                                      onTap: () {
-                                        _selectDate(context);
-                                      },
-                                      child: Container(
-                                        width: 115,
-                                        height: 40,
-                                        decoration: ShapeDecoration(
-                                          shape: RoundedRectangleBorder(
-                                            side: const BorderSide(
-                                                width: 1,
-                                                color: Color(0xFFDDDDDD)),
-                                            borderRadius:
-                                                BorderRadius.circular(5),
+                                    Row(
+                                      children: [
+                                        AppText.appText(
+                                          "From:",
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          textColor: const Color(0xff898989),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            _selectDate(context);
+                                          },
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.3,
+                                            height: 40,
+                                            decoration: ShapeDecoration(
+                                              shape: RoundedRectangleBorder(
+                                                side: const BorderSide(
+                                                    width: 1,
+                                                    color: Color(0xFFDDDDDD)),
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                              ),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 5.0),
+                                              child: Row(
+                                                children: [
+                                                  const Icon(
+                                                    Icons.calendar_month,
+                                                    color: Colors.black,
+                                                    size: 18,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  AppText.appText(
+                                                      startDate == null
+                                                          ? "DD/MM/YYYY"
+                                                          : DateFormat(
+                                                                  'MM-dd-yyyy')
+                                                              .format(
+                                                                  startDate!),
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      textColor:
+                                                          startDate == null
+                                                              ? Colors.black
+                                                              : Colors.black),
+                                                ],
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 5.0),
-                                          child: Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.calendar_month,
-                                                color: Colors.black,
-                                                size: 18,
-                                              ),
-                                              const SizedBox(
-                                                width: 5,
-                                              ),
-                                              AppText.appText(
-                                                  startDate == null
-                                                      ? "DD/MM/YYYY"
-                                                      : DateFormat('MM-dd-yyyy')
-                                                          .format(startDate!),
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  textColor: startDate == null
-                                                      ? Colors.black
-                                                      : Colors.black),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
+                                      ],
                                     ),
-                                    GestureDetector(
-                                      onTap: () {
-                                        _selectDate1(context);
-                                      },
-                                      child: Container(
-                                        width: 115,
-                                        height: 40,
-                                        decoration: ShapeDecoration(
-                                          shape: RoundedRectangleBorder(
-                                            side: const BorderSide(
-                                                width: 1,
-                                                color: Color(0xFFDDDDDD)),
-                                            borderRadius:
-                                                BorderRadius.circular(5),
+                                    Row(
+                                      children: [
+                                        AppText.appText(
+                                          "To:",
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          textColor: const Color(0xff898989),
+                                        ),
+                                        const SizedBox(
+                                          width: 10,
+                                        ),
+                                        GestureDetector(
+                                          onTap: () {
+                                            _selectDate1(context);
+                                          },
+                                          child: Container(
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.3,
+                                            height: 40,
+                                            decoration: ShapeDecoration(
+                                              shape: RoundedRectangleBorder(
+                                                side: const BorderSide(
+                                                    width: 1,
+                                                    color: Color(0xFFDDDDDD)),
+                                                borderRadius:
+                                                    BorderRadius.circular(5),
+                                              ),
+                                            ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 5.0),
+                                              child: Row(
+                                                children: [
+                                                  const Icon(
+                                                    Icons.calendar_month,
+                                                    color: Colors.black,
+                                                    size: 18,
+                                                  ),
+                                                  const SizedBox(
+                                                    width: 5,
+                                                  ),
+                                                  AppText.appText(
+                                                      endDate == null
+                                                          ? "DD/MM/YYYY"
+                                                          : DateFormat(
+                                                                  'MM-dd-yyyy')
+                                                              .format(endDate!),
+                                                      fontSize: 12,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      textColor: endDate == null
+                                                          ? Colors.black
+                                                          : Colors.black),
+                                                ],
+                                              ),
+                                            ),
                                           ),
                                         ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 5.0),
-                                          child: Row(
-                                            children: [
-                                              const Icon(
-                                                Icons.calendar_month,
-                                                color: Colors.black,
-                                                size: 18,
-                                              ),
-                                              const SizedBox(
-                                                width: 5,
-                                              ),
-                                              AppText.appText(
-                                                  endDate == null
-                                                      ? "DD/MM/YYYY"
-                                                      : DateFormat('MM-dd-yyyy')
-                                                          .format(endDate!),
-                                                  fontSize: 12,
-                                                  fontWeight: FontWeight.w400,
-                                                  textColor: endDate == null
-                                                      ? Colors.black
-                                                      : Colors.black),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ),
+                                      ],
+                                    )
                                   ],
                                 ),
                               ),
@@ -587,9 +629,9 @@ class _RequestLeaveState extends State<RequestLeave> {
 }
 
 class CustomTextField extends StatefulWidget {
-  final controller;
-  final hintText;
-  final lines;
+  final TextEditingController? controller;
+  final String? hintText;
+  final int? lines;
   const CustomTextField({Key? key, this.controller, this.hintText, this.lines})
       : super(key: key);
 
@@ -607,33 +649,42 @@ class _CustomTextFieldState extends State<CustomTextField> {
 
   @override
   Widget build(BuildContext context) {
-    return TextField(
-      controller: widget.controller,
-      maxLines: widget.lines,
-      decoration: InputDecoration(
-        isDense: true,
-        hintText: "${widget.hintText}",
-        hintStyle: const TextStyle(
-            color: Color(0xFF666666),
-            fontSize: 14,
-            fontFamily: 'Inter',
-            fontWeight: FontWeight.w400,
-            height: 0),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: BorderSide(width: 1, color: AppTheme.appColor),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: BorderSide(width: 1, color: AppTheme.appColor),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: BorderSide(width: 1, color: AppTheme.appColor),
-        ),
-        disabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(5),
-          borderSide: BorderSide(width: 1, color: AppTheme.appColor),
+    return Theme(
+      data: ThemeData(
+        textSelectionTheme: TextSelectionThemeData(
+          selectionHandleColor: AppTheme.appColor
+        )
+      ),
+      child: TextField(
+        selectionControls: MaterialTextSelectionControls(),
+        cursorColor: AppTheme.appColor,
+        controller: widget.controller,
+        maxLines: widget.lines,
+        decoration: InputDecoration(
+          isDense: true,
+          hintText: "${widget.hintText}",
+          hintStyle: const TextStyle(
+              color: Color(0xFF666666),
+              fontSize: 14,
+              fontFamily: 'Inter',
+              fontWeight: FontWeight.w400,
+              height: 0),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: BorderSide(width: 1, color: AppTheme.appColor),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: BorderSide(width: 1, color: AppTheme.appColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: BorderSide(width: 1, color: AppTheme.appColor),
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(5),
+            borderSide: BorderSide(width: 1, color: AppTheme.appColor),
+          ),
         ),
       ),
     );

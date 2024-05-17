@@ -74,8 +74,6 @@ class _CustomAppFormFieldState extends State<CustomAppFormField> {
       child: TextField(
         controller: widget.controller,
         cursorColor: AppTheme.appColor,
-        cursorHeight: 20,
-        cursorWidth: 2,
         keyboardType: TextInputType.name,
         decoration: InputDecoration(
             prefixIcon: widget.prefixIcon,
@@ -139,7 +137,8 @@ class CustomAppPasswordfield extends StatefulWidget {
     this.suffixIcon,
     this.prefixIconColor,
     this.suffixIconColor,
-    this.errorText, this.cursorColor,
+    this.errorText,
+    this.cursorColor,
   }) : super(key: key);
 
   @override
@@ -168,8 +167,6 @@ class _CustomAppPasswordfieldState extends State<CustomAppPasswordfield> {
         child: TextFormField(
           controller: widget.controller,
           cursorColor: AppTheme.appColor,
-          cursorHeight: 20,
-          cursorWidth: 2,
           obscureText: _obscureText,
           keyboardType: TextInputType.name,
           decoration: InputDecoration(

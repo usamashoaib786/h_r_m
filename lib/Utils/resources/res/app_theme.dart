@@ -4,9 +4,7 @@ class AppTheme {
   AppTheme._();
 
   static Color green = const Color(0xff19A99D);
-  static Color appColor =
-      const Color(//     pushReplacement(context, BottomNavView());
-          0xffD74C23);
+  static Color appColor = const Color(0xffD74C23);
   static Color white = Colors.white;
   static Color whiteColor = Colors.white;
 

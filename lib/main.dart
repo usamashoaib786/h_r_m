@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:h_r_m/Utils/resources/res/app_theme.dart';
 import 'package:h_r_m/View/HomePAge/api.dart';
 import 'package:h_r_m/splash_screen.dart';
 import 'package:provider/provider.dart';
@@ -25,7 +26,10 @@ class MyApp extends StatelessWidget {
         child: MaterialApp(
           debugShowCheckedModeBanner: false,
           title: 'HR Maverix',
-          theme: ThemeData(),
+          theme: ThemeData(
+            primaryColor: const Color(0xffD74C23),
+            hoverColor: const Color(0xffD74C23),
+          ),
           home: const SplashScreen(),
         ),
       );

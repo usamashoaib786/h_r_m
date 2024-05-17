@@ -88,162 +88,160 @@ class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
-        child: Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                height: 53,
-                width: 230,
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(35),
-                    color: AppTheme.appColor),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            home = !home;
-                            office = !home;
-                            checkOffice = 0;
-                          });
-                        },
-                        child: Container(
-                          height: 40,
-                          width: 107,
-                          decoration: BoxDecoration(
-                              color: office == true
-                                  ? const Color(0xffffffffe5)
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(35)),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Image.asset("assets/images/office.png"),
-                                AppText.appText("Office",
-                                    textColor: office == true
-                                        ? Colors.black
-                                        : AppTheme.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700)
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            home = !home;
-                            office = !home;
-                            checkOffice = 1;
-                          });
-                        },
-                        child: Container(
-                          height: 40,
-                          width: 107,
-                          decoration: BoxDecoration(
-                              color: home == true
-                                  ? const Color(0xffffffffe5)
-                                  : Colors.transparent,
-                              borderRadius: BorderRadius.circular(35)),
-                          child: Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Icon(
-                                  Icons.home,
-                                  color: home == true
+        padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+              height: 53,
+              width: 230,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(35),
+                  color: AppTheme.appColor),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          home = !home;
+                          office = !home;
+                          checkOffice = 0;
+                        });
+                      },
+                      child: Container(
+                        height: 40,
+                        width: 107,
+                        decoration: BoxDecoration(
+                            color: office == true
+                                ? const Color(0xffffffffe5)
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(35)),
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Image.asset("assets/images/office.png"),
+                              AppText.appText("Office",
+                                  textColor: office == true
                                       ? Colors.black
                                       : AppTheme.white,
-                                ),
-                                AppText.appText("Home",
-                                    textColor: home == true
-                                        ? Colors.black
-                                        : AppTheme.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700)
-                              ],
-                            ),
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700)
+                            ],
                           ),
                         ),
                       ),
-                    ],
-                  ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          home = !home;
+                          office = !home;
+                          checkOffice = 1;
+                        });
+                      },
+                      child: Container(
+                        height: 40,
+                        width: 107,
+                        decoration: BoxDecoration(
+                            color: home == true
+                                ? const Color(0xffffffffe5)
+                                : Colors.transparent,
+                            borderRadius: BorderRadius.circular(35)),
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Icon(
+                                Icons.home,
+                                color: home == true
+                                    ? Colors.black
+                                    : AppTheme.white,
+                              ),
+                              AppText.appText("Home",
+                                  textColor: home == true
+                                      ? Colors.black
+                                      : AppTheme.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700)
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          AppText.appText(_currentTime,
-                              fontSize: 48, fontWeight: FontWeight.w400),
-                          const SizedBox(
-                            width: 10,
-                          ),
-                          AppText.appText(_amPm,
-                              fontSize: 20, fontWeight: FontWeight.w400)
-                        ],
-                      ),
-                      AppText.appText(_date,
-                          fontSize: 20, fontWeight: FontWeight.w400),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          markAttendence();
-                        },
-                        child: Image.asset(
-                          "assets/images/finger.png",
-                          height: 180,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        AppText.appText(_currentTime,
+                            fontSize: 48, fontWeight: FontWeight.w400),
+                        const SizedBox(
+                          width: 10,
                         ),
+                        AppText.appText(_amPm,
+                            fontSize: 20, fontWeight: FontWeight.w400)
+                      ],
+                    ),
+                    AppText.appText(_date,
+                        fontSize: 20, fontWeight: FontWeight.w400),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        markAttendence();
+                      },
+                      child: Image.asset(
+                        "assets/images/finger.png",
+                        height: 180,
                       ),
-                    ],
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  customButton(
-                      txt: "Check In",
-                      color:
-                          checkIn == true ? AppTheme.appColor : AppTheme.green,
-                      ontap: () {
-                        setState(() {
-                          checkIn = true;
-                        });
-                      }),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  customButton(
-                      txt: "Check Out",
-                      color:
-                          checkIn == false ? AppTheme.appColor : AppTheme.green,
-                      ontap: () {
-                        setState(() {
-                          checkIn = false;
-                        });
-                      }),
-                ],
-              )
-            ],
-          ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                customButton(
+                    txt: "Check In",
+                    color:
+                        checkIn == true ? AppTheme.appColor : AppTheme.green,
+                    ontap: () {
+                      setState(() {
+                        checkIn = true;
+                      });
+                    }),
+                const SizedBox(
+                  width: 20,
+                ),
+                customButton(
+                    txt: "Check Out",
+                    color:
+                        checkIn == false ? AppTheme.appColor : AppTheme.green,
+                    ontap: () {
+                      setState(() {
+                        checkIn = false;
+                      });
+                    }),
+              ],
+            )
+          ],
         ),
       ),
     );
