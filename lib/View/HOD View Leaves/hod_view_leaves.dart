@@ -35,8 +35,12 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     userType = prefs.getString(PrefKey.userType);
     if (userType == "3") {
-      getLeavesRequest(hr: false);
-    } else if (userType == "1") {}
+      getLeavesRequest(hr: false, ceo: false);
+    } else if (userType == "1") {
+      getLeavesRequest(hr: true, ceo: false);
+    } else if (userType == "5") {
+      getLeavesRequest(ceo: true, hr: false);
+    }
   }
 
   @override
@@ -176,10 +180,22 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
                                       children: [
                                         AppButton.appButton("Approved",
                                             onTap: () {
-                                          if (userType == "3") {
+                                          if (userType == "1") {
                                             aprovedByHod(
-                                                id: "${data["id"]}", hr: false);
-                                          } else if (userType == "1") {}
+                                                id: "${data["id"]}",
+                                                hr: true,
+                                                ceo: false);
+                                          } else if (userType == "5") {
+                                            aprovedByHod(
+                                                id: "${data["id"]}",
+                                                hr: false,
+                                                ceo: true);
+                                          } else if (userType == "3") {
+                                            aprovedByHod(
+                                                id: "${data["id"]}",
+                                                hr: false,
+                                                ceo: false);
+                                          }
                                         },
                                             width: screenWidth * 0.3,
                                             radius: 16.0,
@@ -190,10 +206,21 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
                                             height: 35),
                                         AppButton.appButton("Reject",
                                             onTap: () {
-                                          if (userType == "3") {
+                                          if (userType == "1") {
                                             rejectByHod(
-                                                id: "${data["id"]}", hr: false);
-                                          } else if (userType == "1") {
+                                                id: "${data["id"]}",
+                                                hr: true,
+                                                ceo: false);
+                                          } else if (userType == "5") {
+                                            rejectByHod(
+                                                id: "${data["id"]}",
+                                                hr: false,
+                                                ceo: true);
+                                          } else if (userType == "3") {
+                                            rejectByHod(
+                                                id: "${data["id"]}",
+                                                hr: false,
+                                                ceo: false);
                                           }
                                         },
                                             width: screenWidth * 0.3,
@@ -220,7 +247,8 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
     );
   }
 
-  void getLeavesRequest({hr}) async {
+  void getLeavesRequest({hr, ceo}) async {
+    print("jbfkfkb$ceo");
     setState(() {
       isLoading = true;
     });
@@ -234,9 +262,12 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
     int responseCode500 = 500; // Internal server error.
 
     try {
-      hr == false
-          ? response = await dio.get(path: AppUrls.getEmployeeLeaveRequests)
-          : response = await dio.get(path: AppUrls.getHREmployeeLeaveRequests);
+      hr == true
+          ? response = await dio.get(path: AppUrls.getHREmployeeLeaveRequests)
+          : ceo == true
+              ? response = await dio.get(path: AppUrls.getCeoLeaveRequests)
+              : response =
+                  await dio.get(path: AppUrls.getEmployeeLeaveRequests);
       var responseData = response.data;
       if (response.statusCode == responseCode400) {
         Fluttertoast.showToast(msg: "${responseData["message"]}");
@@ -273,9 +304,12 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
         } else {
           setState(() {
             isLoading = false;
-            leaveRequest = hr == false
-                ? responseData["leave_applications"]
-                : responseData["leavesApprovedByHod"];
+            leaveRequest = hr == true
+                ? responseData["leavesApprovedByHod"]
+                : ceo == true
+                    ? responseData["leaveApplication"]
+                    : responseData["leave_applications"];
+                    print("mlvrmvlrvlm${leaveRequest.length}");
           });
         }
       }
@@ -287,7 +321,7 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
     }
   }
 
-  void aprovedByHod({id, hr}) async {
+  void aprovedByHod({id, hr, ceo}) async {
     setState(() {
       isLoading = true;
     });
@@ -303,9 +337,13 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
       "id": id,
     };
     try {
-      hr == false
-          ? response = await dio.post(path: AppUrls.approvedByHod, data: params)
-          : response = await dio.post(path: AppUrls.approvedByHr, data: params);
+      hr == true
+          ? response = await dio.post(path: AppUrls.approvedByHr, data: params)
+          : ceo == true
+              ? response =
+                  await dio.post(path: AppUrls.approvedByCeo, data: params)
+              : response =
+                  await dio.post(path: AppUrls.approvedByHod, data: params);
       var responseData = response.data;
       if (response.statusCode == responseCode400) {
         Fluttertoast.showToast(msg: "${responseData["message"]}");
@@ -356,7 +394,7 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
     }
   }
 
-  void rejectByHod({id, hr}) async {
+  void rejectByHod({id, hr, ceo}) async {
     setState(() {
       isLoading = true;
     });
@@ -372,9 +410,13 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
       "id": id,
     };
     try {
-      hr == false
-          ? response = await dio.post(path: AppUrls.rejectByHod, data: params)
-          : response = await dio.post(path: AppUrls.rejectByHr, data: params);
+      hr == true
+          ? response = await dio.post(path: AppUrls.rejectByHr, data: params)
+          : ceo == true
+              ? response =
+                  await dio.post(path: AppUrls.rejectByCeo, data: params)
+              : response =
+                  await dio.post(path: AppUrls.rejectByHod, data: params);
       var responseData = response.data;
       if (response.statusCode == responseCode400) {
         Fluttertoast.showToast(msg: "${responseData["message"]}");

@@ -80,6 +80,12 @@ class _LandingScreenState extends State<LandingScreen> {
                                       Icons.person,
                                       size: 20,
                                     ))
+                                  : homeApi.profileDetail["avatar"] == null
+                                  ? const Center(
+                                      child: Icon(
+                                      Icons.person,
+                                      size: 20,
+                                    ))
                                   : ClipRRect(
                                       borderRadius: BorderRadius.circular(100),
                                       child: Image.network(
@@ -199,6 +205,7 @@ class _LandingScreenState extends State<LandingScreen> {
                 runSpacing: 50,
                 spacing: 20,
                 children: [
+                   if (homeApi.userType != "5"  )
                   customContainer(
                       onTap: () {
                         push(
@@ -210,6 +217,8 @@ class _LandingScreenState extends State<LandingScreen> {
                       bgColor: AppTheme.appColor,
                       txt: "Mark \nAttendance",
                       img: "assets/images/fingerPrint.png"),
+                   if (homeApi.userType != "5"  )
+
                   customContainer(
                       onTap: () {
                         push(
@@ -221,6 +230,7 @@ class _LandingScreenState extends State<LandingScreen> {
                       bgColor: AppTheme.appColor,
                       txt: "View \nAttendance",
                       img: "assets/images/attendenceReq.png"),
+                   if (homeApi.userType != "5"  )
                   customContainer(
                       onTap: () {
                         push(
@@ -232,6 +242,7 @@ class _LandingScreenState extends State<LandingScreen> {
                       bgColor: AppTheme.appColor,
                       txt: "Request \nLeave",
                       img: "assets/images/leavereq.png"),
+                   if (homeApi.userType != "5"  )
                   customContainer(
                       onTap: () {
                         push(
@@ -243,7 +254,7 @@ class _LandingScreenState extends State<LandingScreen> {
                       bgColor: AppTheme.green,
                       txt: "Leave \nQuota",
                       img: "assets/images/leaveQuota.png"),
-                  if (homeApi.userType == "3")
+                  if (homeApi.userType == "3" || homeApi.userType == "1" )
                     customContainer(
                         onTap: () {
                           push(context, const EmployeeListScreen());
@@ -251,7 +262,7 @@ class _LandingScreenState extends State<LandingScreen> {
                         bgColor: AppTheme.appColor,
                         txt: "Employee \nList",
                         img: "assets/images/leavereq.png"),
-                  if (homeApi.userType == "3" || homeApi.userType == "1")
+                  if (homeApi.userType == "3" || homeApi.userType == "1"|| homeApi.userType == "5")
                     customContainer(
                         onTap: () {
                           push(context, const HodViewLeaves());

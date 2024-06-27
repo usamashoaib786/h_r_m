@@ -15,13 +15,16 @@ class AppUrls {
   static const String getHodEmployees = "hod/employees";
   static const String getEmployeeLeaveRequests =
       "hod/employee/leave_application";
+  static const String getCeoLeaveRequests = "ceo/leave_application/index";
   static const String getHREmployeeLeaveRequests =
-      "/hr/employee/leave_application/accept-by-hod";
+      "hr/employee/leave_application/accept-by-hod";
   static const String approvedByHod = "hod/employee/leave_application/approved";
   static const String rejectByHod =
       "hod/employee/leave_application/not_approved";
   static const String approvedByHr =
-      "/hr/employee/leave_application/approved-by-hr";
-  static const String rejectByHr =
-      "/hr/employee/leave_application/reject-by-hr";
+      "hr/employee/leave_application/approved-by-hr";
+  static const String rejectByHr = "hr/employee/leave_application/reject-by-hr";
+
+  static const String approvedByCeo = "ceo/leave_application/approve-by-ceo";
+  static const String rejectByCeo = "ceo/leave_application/reject-by-ceo";
 }
