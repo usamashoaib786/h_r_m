@@ -309,7 +309,7 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
                 : ceo == true
                     ? responseData["leaveApplication"]
                     : responseData["leave_applications"];
-                    print("mlvrmvlrvlm${leaveRequest.length}");
+            print("mlvrmvlrvlm${leaveRequest.length}");
           });
         }
       }
@@ -380,9 +380,12 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
         } else {
           setState(() {
             isLoading = false;
-            hr == false
-                ? getLeavesRequest(hr: false)
-                : getLeavesRequest(hr: true);
+
+            hr == true
+                ? getLeavesRequest(hr: true, ceo: false)
+                : ceo == true
+                    ? getLeavesRequest(hr: false, ceo: true)
+                    : getLeavesRequest(hr: false, ceo: false);
           });
         }
       }
@@ -453,9 +456,11 @@ class _HodViewLeavesState extends State<HodViewLeaves> {
         } else {
           setState(() {
             isLoading = false;
-            hr == false
-                ? getLeavesRequest(hr: false)
-                : getLeavesRequest(hr: true);
+            hr == true
+                ? getLeavesRequest(hr: true, ceo: false)
+                : ceo == true
+                    ? getLeavesRequest(hr: false, ceo: true)
+                    : getLeavesRequest(hr: false, ceo: false);
           });
         }
       }
