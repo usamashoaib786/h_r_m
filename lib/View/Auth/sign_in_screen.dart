@@ -42,9 +42,7 @@ class _SignInScreenState extends State<SignInScreen> {
     AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
     setState(() {
       _deviceID = androidInfo.androidId;
-      if (kDebugMode) {
-        print("neflfnnl$_deviceID");
-      }
+      if (kDebugMode) {}
     });
   }
 
@@ -107,19 +105,26 @@ class _SignInScreenState extends State<SignInScreen> {
                                   color: AppTheme.appColor,
                                 ),
                               )
-                            : AppButton.appButton("LOGIN", onTap: () {
+                            : AppButton.appButton("LOGIN", onTap: () async {
+                                var pref =
+                                    await SharedPreferences.getInstance();
+
+                                pref.clear();
+                                print(PrefKey.authorization);
                                 if (_emailController.text.isNotEmpty) {
                                   final emailPattern = RegExp(
                                       r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
                                   if (!emailPattern
                                       .hasMatch(_emailController.text)) {
-                                    Fluttertoast.showToast(msg:
-                                        "Please enter a valid email address");
+                                    Fluttertoast.showToast(
+                                        msg:
+                                            "Please enter a valid email address");
                                   } else {
                                     if (_passwordController.text.isNotEmpty) {
                                       signIn(context);
                                     } else {
-                                      Fluttertoast.showToast(msg: "Enter Password");
+                                      Fluttertoast.showToast(
+                                          msg: "Enter Password");
                                     }
                                   }
                                 } else {

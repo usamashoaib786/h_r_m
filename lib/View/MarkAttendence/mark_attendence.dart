@@ -120,8 +120,7 @@ class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
                                 : Colors.transparent,
                             borderRadius: BorderRadius.circular(35)),
                         child: Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 10.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
@@ -154,8 +153,7 @@ class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
                                 : Colors.transparent,
                             borderRadius: BorderRadius.circular(35)),
                         child: Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 10.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
@@ -204,7 +202,15 @@ class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        markAttendence();
+                        var now = DateTime.now();
+                        String dayOfWeek = DateFormat('EEEE').format(now);
+                        if (dayOfWeek == 'Wednesday' || dayOfWeek == 'Sunday') {
+                          Fluttertoast.showToast(
+                              msg:
+                                  "Attendence is not marked because office is off today");
+                        } else {
+                          markAttendence();
+                        }
                       },
                       child: Image.asset(
                         "assets/images/finger.png",
@@ -220,8 +226,7 @@ class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
               children: [
                 customButton(
                     txt: "Check In",
-                    color:
-                        checkIn == true ? AppTheme.appColor : AppTheme.green,
+                    color: checkIn == true ? AppTheme.appColor : AppTheme.green,
                     ontap: () {
                       setState(() {
                         checkIn = true;

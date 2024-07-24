@@ -72,10 +72,12 @@ class _RequestLeaveState extends State<RequestLeave> {
           fontWeight: FontWeight.w700,
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.only(top: 20.0),
+      body: SingleChildScrollView(
         child: Column(
           children: [
+            const SizedBox(
+              height: 20,
+            ),
             Align(
                 alignment: Alignment.center,
                 child: Image.asset(
@@ -85,271 +87,241 @@ class _RequestLeaveState extends State<RequestLeave> {
             const SizedBox(
               height: 10,
             ),
-            Expanded(
-                child: Card(
-              elevation: 5,
-              color: AppTheme.whiteColor,
-              shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(70),
-                topRight: Radius.circular(70),
-              )),
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                    color: AppTheme.whiteColor,
-                    borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(70),
-                      topRight: Radius.circular(70),
-                    )),
-                child: leaveTypes == null
-                    ? Center(
-                        child: CircularProgressIndicator(
-                          color: AppTheme.appColor,
-                        ),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.only(
-                          top: 30.0,
-                        ),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              headText(txt: "Select Leave Type"),
-                              const SizedBox(
-                                height: 20,
+            leaveTypes == null
+                ? Center(
+                    child: CircularProgressIndicator(
+                      color: AppTheme.appColor,
+                    ),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.only(
+                      top: 30.0,
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          headText(txt: "Select Leave Type"),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: GridView.builder(
+                              shrinkWrap: true,
+                              itemCount: leaveTypes.length,
+                              gridDelegate:
+                                  const SliverGridDelegateWithFixedCrossAxisCount(
+                                mainAxisSpacing: 10,
+                                crossAxisSpacing: 20,
+                                childAspectRatio: 2.5,
+                                crossAxisCount: 3,
                               ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20.0),
-                                child: GridView.builder(
-                                  shrinkWrap: true,
-                                  itemCount: leaveTypes.length,
-                                  gridDelegate:
-                                      const SliverGridDelegateWithFixedCrossAxisCount(
-                                    mainAxisSpacing: 10,
-                                    crossAxisSpacing: 20,
-                                    childAspectRatio: 2.5,
-                                    crossAxisCount: 3,
-                                  ),
-                                  itemBuilder: (context, index) {
-                                    return buildRequestTypeContainer(
-                                      requestType:
-                                          "${leaveTypes[index]["leave_category"]}",
-                                      id: "${leaveTypes[index]["id"]}",
-                                    );
-                                  },
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              customDivider(),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              headText(txt: "Select Date"),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20.0),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                              itemBuilder: (context, index) {
+                                return buildRequestTypeContainer(
+                                  requestType:
+                                      "${leaveTypes[index]["leave_category"]}",
+                                  id: "${leaveTypes[index]["id"]}",
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          customDivider(),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          headText(txt: "Select Date"),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
                                   children: [
-                                    Row(
-                                      children: [
-                                        AppText.appText(
-                                          "From:",
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          textColor: const Color(0xff898989),
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            _selectDate(context);
-                                          },
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
-                                                0.3,
-                                            height: 40,
-                                            decoration: ShapeDecoration(
-                                              shape: RoundedRectangleBorder(
-                                                side: const BorderSide(
-                                                    width: 1,
-                                                    color: Color(0xFFDDDDDD)),
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                              ),
-                                            ),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 5.0),
-                                              child: Row(
-                                                children: [
-                                                  const Icon(
-                                                    Icons.calendar_month,
-                                                    color: Colors.black,
-                                                    size: 18,
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 5,
-                                                  ),
-                                                  AppText.appText(
-                                                      startDate == null
-                                                          ? "DD/MM/YYYY"
-                                                          : DateFormat(
-                                                                  'MM-dd-yyyy')
-                                                              .format(
-                                                                  startDate!),
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      textColor:
-                                                          startDate == null
-                                                              ? Colors.black
-                                                              : Colors.black),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                                    AppText.appText(
+                                      "From:",
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      textColor: const Color(0xff898989),
                                     ),
-                                    Row(
-                                      children: [
-                                        AppText.appText(
-                                          "To:",
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          textColor: const Color(0xff898989),
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            _selectDate1(context);
-                                          },
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width *
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        _selectDate(context);
+                                      },
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
                                                 0.3,
-                                            height: 40,
-                                            decoration: ShapeDecoration(
-                                              shape: RoundedRectangleBorder(
-                                                side: const BorderSide(
-                                                    width: 1,
-                                                    color: Color(0xFFDDDDDD)),
-                                                borderRadius:
-                                                    BorderRadius.circular(5),
-                                              ),
-                                            ),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 5.0),
-                                              child: Row(
-                                                children: [
-                                                  const Icon(
-                                                    Icons.calendar_month,
-                                                    color: Colors.black,
-                                                    size: 18,
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 5,
-                                                  ),
-                                                  AppText.appText(
-                                                      endDate == null
-                                                          ? "DD/MM/YYYY"
-                                                          : DateFormat(
-                                                                  'MM-dd-yyyy')
-                                                              .format(endDate!),
-                                                      fontSize: 12,
-                                                      fontWeight:
-                                                          FontWeight.w400,
-                                                      textColor: endDate == null
-                                                          ? Colors.black
-                                                          : Colors.black),
-                                                ],
-                                              ),
-                                            ),
+                                        height: 40,
+                                        decoration: ShapeDecoration(
+                                          shape: RoundedRectangleBorder(
+                                            side: const BorderSide(
+                                                width: 1,
+                                                color: Color(0xFFDDDDDD)),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
                                           ),
                                         ),
-                                      ],
-                                    )
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 5.0),
+                                          child: Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.calendar_month,
+                                                color: Colors.black,
+                                                size: 18,
+                                              ),
+                                              const SizedBox(
+                                                width: 5,
+                                              ),
+                                              AppText.appText(
+                                                  startDate == null
+                                                      ? "DD/MM/YYYY"
+                                                      : DateFormat('MM-dd-yyyy')
+                                                          .format(startDate!),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w400,
+                                                  textColor: startDate == null
+                                                      ? Colors.black
+                                                      : Colors.black),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              customDivider(),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              headText(txt: "Select Day"),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  buildOptionContainer(
-                                      text: 'Half-Day',
-                                      option: 'half',
-                                      radius: 1,
-                                      type: 1),
-                                  buildOptionContainer(
-                                      text: 'Full-Day',
-                                      option: 'full',
-                                      radius: 2,
-                                      type: 2),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 20,
-                              ),
-                              customDivider(),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              headText(txt: "Write Reason"),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20.0, vertical: 10),
-                                child: CustomTextField(
-                                  controller: _descController,
-                                  lines: 3,
-                                  hintText: "",
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 20.0, vertical: 10),
-                                child: AppButton.appButton("SUBMIT", onTap: () {
-                                  leaveRequest();
-                                },
-                                    backgroundColor: AppTheme.appColor,
-                                    textColor: AppTheme.whiteColor,
-                                    height: 45),
-                              )
+                                Row(
+                                  children: [
+                                    AppText.appText(
+                                      "To:",
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.w500,
+                                      textColor: const Color(0xff898989),
+                                    ),
+                                    const SizedBox(
+                                      width: 10,
+                                    ),
+                                    GestureDetector(
+                                      onTap: () {
+                                        _selectDate1(context);
+                                      },
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width *
+                                                0.3,
+                                        height: 40,
+                                        decoration: ShapeDecoration(
+                                          shape: RoundedRectangleBorder(
+                                            side: const BorderSide(
+                                                width: 1,
+                                                color: Color(0xFFDDDDDD)),
+                                            borderRadius:
+                                                BorderRadius.circular(5),
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 5.0),
+                                          child: Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.calendar_month,
+                                                color: Colors.black,
+                                                size: 18,
+                                              ),
+                                              const SizedBox(
+                                                width: 5,
+                                              ),
+                                              AppText.appText(
+                                                  endDate == null
+                                                      ? "DD/MM/YYYY"
+                                                      : DateFormat('MM-dd-yyyy')
+                                                          .format(endDate!),
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w400,
+                                                  textColor: endDate == null
+                                                      ? Colors.black
+                                                      : Colors.black),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          customDivider(),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          headText(txt: "Select Day"),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              buildOptionContainer(
+                                  text: 'Half-Day',
+                                  option: 'half',
+                                  radius: 1,
+                                  type: 1),
+                              buildOptionContainer(
+                                  text: 'Full-Day',
+                                  option: 'full',
+                                  radius: 2,
+                                  type: 2),
                             ],
                           ),
-                        ),
+                          const SizedBox(
+                            height: 20,
+                          ),
+                          customDivider(),
+                          const SizedBox(
+                            height: 10,
+                          ),
+                          headText(txt: "Write Reason"),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20.0, vertical: 10),
+                            child: CustomTextField(
+                              controller: _descController,
+                              lines: 3,
+                              hintText: "",
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20.0, vertical: 10),
+                            child: AppButton.appButton("SUBMIT", onTap: () {
+                              leaveRequest();
+                            },
+                                backgroundColor: AppTheme.appColor,
+                                textColor: AppTheme.whiteColor,
+                                height: 45),
+                          )
+                        ],
                       ),
-              ),
-            ))
+                    ),
+                  )
           ],
         ),
       ),
@@ -651,10 +623,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
   Widget build(BuildContext context) {
     return Theme(
       data: ThemeData(
-        textSelectionTheme: TextSelectionThemeData(
-          selectionHandleColor: AppTheme.appColor
-        )
-      ),
+          textSelectionTheme:
+              TextSelectionThemeData(selectionHandleColor: AppTheme.appColor)),
       child: TextField(
         selectionControls: MaterialTextSelectionControls(),
         cursorColor: AppTheme.appColor,
@@ -690,3 +660,269 @@ class _CustomTextFieldState extends State<CustomTextField> {
     );
   }
 }
+  // Expanded(
+  //               child: Card(
+  //             elevation: 5,
+  //             color: AppTheme.whiteColor,
+  //             shape: const RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.only(
+  //               topLeft: Radius.circular(70),
+  //               topRight: Radius.circular(70),
+  //             )),
+  //             child: Container(
+  //               width: MediaQuery.of(context).size.width,
+  //               decoration: BoxDecoration(
+  //                   color: AppTheme.whiteColor,
+  //                   borderRadius: const BorderRadius.only(
+  //                     topLeft: Radius.circular(70),
+  //                     topRight: Radius.circular(70),
+  //                   )),
+  //               child: leaveTypes == null
+  //                   ? Center(
+  //                       child: CircularProgressIndicator(
+  //                         color: AppTheme.appColor,
+  //                       ),
+  //                     )
+  //                   : Padding(
+  //                       padding: const EdgeInsets.only(
+  //                         top: 30.0,
+  //                       ),
+  //                       child: SingleChildScrollView(
+  //                         child: Column(
+  //                           crossAxisAlignment: CrossAxisAlignment.start,
+  //                           children: [
+  //                             headText(txt: "Select Leave Type"),
+  //                             const SizedBox(
+  //                               height: 20,
+  //                             ),
+  //                             Padding(
+  //                               padding: const EdgeInsets.symmetric(
+  //                                   horizontal: 20.0),
+  //                               child: GridView.builder(
+  //                                 shrinkWrap: true,
+  //                                 itemCount: leaveTypes.length,
+  //                                 gridDelegate:
+  //                                     const SliverGridDelegateWithFixedCrossAxisCount(
+  //                                   mainAxisSpacing: 10,
+  //                                   crossAxisSpacing: 20,
+  //                                   childAspectRatio: 2.5,
+  //                                   crossAxisCount: 3,
+  //                                 ),
+  //                                 itemBuilder: (context, index) {
+  //                                   return buildRequestTypeContainer(
+  //                                     requestType:
+  //                                         "${leaveTypes[index]["leave_category"]}",
+  //                                     id: "${leaveTypes[index]["id"]}",
+  //                                   );
+  //                                 },
+  //                               ),
+  //                             ),
+  //                             const SizedBox(
+  //                               height: 20,
+  //                             ),
+  //                             customDivider(),
+  //                             const SizedBox(
+  //                               height: 20,
+  //                             ),
+  //                             headText(txt: "Select Date"),
+  //                             const SizedBox(
+  //                               height: 10,
+  //                             ),
+  //                             Padding(
+  //                               padding: const EdgeInsets.symmetric(
+  //                                   horizontal: 20.0),
+  //                               child: Row(
+  //                                 mainAxisAlignment:
+  //                                     MainAxisAlignment.spaceBetween,
+  //                                 children: [
+  //                                   Row(
+  //                                     children: [
+  //                                       AppText.appText(
+  //                                         "From:",
+  //                                         fontSize: 12,
+  //                                         fontWeight: FontWeight.w500,
+  //                                         textColor: const Color(0xff898989),
+  //                                       ),
+  //                                       const SizedBox(
+  //                                         width: 10,
+  //                                       ),
+  //                                       GestureDetector(
+  //                                         onTap: () {
+  //                                           _selectDate(context);
+  //                                         },
+  //                                         child: Container(
+  //                                           width: MediaQuery.of(context)
+  //                                                   .size
+  //                                                   .width *
+  //                                               0.3,
+  //                                           height: 40,
+  //                                           decoration: ShapeDecoration(
+  //                                             shape: RoundedRectangleBorder(
+  //                                               side: const BorderSide(
+  //                                                   width: 1,
+  //                                                   color: Color(0xFFDDDDDD)),
+  //                                               borderRadius:
+  //                                                   BorderRadius.circular(5),
+  //                                             ),
+  //                                           ),
+  //                                           child: Padding(
+  //                                             padding:
+  //                                                 const EdgeInsets.symmetric(
+  //                                                     horizontal: 5.0),
+  //                                             child: Row(
+  //                                               children: [
+  //                                                 const Icon(
+  //                                                   Icons.calendar_month,
+  //                                                   color: Colors.black,
+  //                                                   size: 18,
+  //                                                 ),
+  //                                                 const SizedBox(
+  //                                                   width: 5,
+  //                                                 ),
+  //                                                 AppText.appText(
+  //                                                     startDate == null
+  //                                                         ? "DD/MM/YYYY"
+  //                                                         : DateFormat(
+  //                                                                 'MM-dd-yyyy')
+  //                                                             .format(
+  //                                                                 startDate!),
+  //                                                     fontSize: 12,
+  //                                                     fontWeight:
+  //                                                         FontWeight.w400,
+  //                                                     textColor:
+  //                                                         startDate == null
+  //                                                             ? Colors.black
+  //                                                             : Colors.black),
+  //                                               ],
+  //                                             ),
+  //                                           ),
+  //                                         ),
+  //                                       ),
+  //                                     ],
+  //                                   ),
+  //                                   Row(
+  //                                     children: [
+  //                                       AppText.appText(
+  //                                         "To:",
+  //                                         fontSize: 12,
+  //                                         fontWeight: FontWeight.w500,
+  //                                         textColor: const Color(0xff898989),
+  //                                       ),
+  //                                       const SizedBox(
+  //                                         width: 10,
+  //                                       ),
+  //                                       GestureDetector(
+  //                                         onTap: () {
+  //                                           _selectDate1(context);
+  //                                         },
+  //                                         child: Container(
+  //                                           width: MediaQuery.of(context)
+  //                                                   .size
+  //                                                   .width *
+  //                                               0.3,
+  //                                           height: 40,
+  //                                           decoration: ShapeDecoration(
+  //                                             shape: RoundedRectangleBorder(
+  //                                               side: const BorderSide(
+  //                                                   width: 1,
+  //                                                   color: Color(0xFFDDDDDD)),
+  //                                               borderRadius:
+  //                                                   BorderRadius.circular(5),
+  //                                             ),
+  //                                           ),
+  //                                           child: Padding(
+  //                                             padding:
+  //                                                 const EdgeInsets.symmetric(
+  //                                                     horizontal: 5.0),
+  //                                             child: Row(
+  //                                               children: [
+  //                                                 const Icon(
+  //                                                   Icons.calendar_month,
+  //                                                   color: Colors.black,
+  //                                                   size: 18,
+  //                                                 ),
+  //                                                 const SizedBox(
+  //                                                   width: 5,
+  //                                                 ),
+  //                                                 AppText.appText(
+  //                                                     endDate == null
+  //                                                         ? "DD/MM/YYYY"
+  //                                                         : DateFormat(
+  //                                                                 'MM-dd-yyyy')
+  //                                                             .format(endDate!),
+  //                                                     fontSize: 12,
+  //                                                     fontWeight:
+  //                                                         FontWeight.w400,
+  //                                                     textColor: endDate == null
+  //                                                         ? Colors.black
+  //                                                         : Colors.black),
+  //                                               ],
+  //                                             ),
+  //                                           ),
+  //                                         ),
+  //                                       ),
+  //                                     ],
+  //                                   )
+  //                                 ],
+  //                               ),
+  //                             ),
+  //                             const SizedBox(
+  //                               height: 20,
+  //                             ),
+  //                             customDivider(),
+  //                             const SizedBox(
+  //                               height: 10,
+  //                             ),
+  //                             headText(txt: "Select Day"),
+  //                             const SizedBox(
+  //                               height: 10,
+  //                             ),
+  //                             Row(
+  //                               mainAxisAlignment: MainAxisAlignment.center,
+  //                               children: [
+  //                                 buildOptionContainer(
+  //                                     text: 'Half-Day',
+  //                                     option: 'half',
+  //                                     radius: 1,
+  //                                     type: 1),
+  //                                 buildOptionContainer(
+  //                                     text: 'Full-Day',
+  //                                     option: 'full',
+  //                                     radius: 2,
+  //                                     type: 2),
+  //                               ],
+  //                             ),
+  //                             const SizedBox(
+  //                               height: 20,
+  //                             ),
+  //                             customDivider(),
+  //                             const SizedBox(
+  //                               height: 10,
+  //                             ),
+  //                             headText(txt: "Write Reason"),
+  //                             Padding(
+  //                               padding: const EdgeInsets.symmetric(
+  //                                   horizontal: 20.0, vertical: 10),
+  //                               child: CustomTextField(
+  //                                 controller: _descController,
+  //                                 lines: 3,
+  //                                 hintText: "",
+  //                               ),
+  //                             ),
+  //                             Padding(
+  //                               padding: const EdgeInsets.symmetric(
+  //                                   horizontal: 20.0, vertical: 10),
+  //                               child: AppButton.appButton("SUBMIT", onTap: () {
+  //                                 leaveRequest();
+  //                               },
+  //                                   backgroundColor: AppTheme.appColor,
+  //                                   textColor: AppTheme.whiteColor,
+  //                                   height: 45),
+  //                             )
+  //                           ],
+  //                         ),
+  //                       ),
+  //                     ),
+  //             ),
+  //           ))
+        

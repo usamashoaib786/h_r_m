@@ -201,7 +201,8 @@ class _leaveQuotaScreenState extends State<leaveQuotaScreen> {
                                           AppText.appText("Reason:    ",
                                               fontSize: 12,
                                               fontWeight: FontWeight.w600,
-                                              textColor: const Color(0xff979696)),
+                                              textColor:
+                                                  const Color(0xff979696)),
                                           SizedBox(
                                             width: screenWidth * 0.6,
                                             child: AppText.appText(
@@ -218,20 +219,36 @@ class _leaveQuotaScreenState extends State<leaveQuotaScreen> {
                                     height: 10,
                                   ),
                                   AppButton.appButton(
-                                      leaveApplication[index]["publication_status"] == "0"
+                                      leaveApplication[index]
+                                                      ["publication_status"] ==
+                                                  "0" ||
+                                              leaveApplication[index]
+                                                      ["publication_status"] ==
+                                                  "5"
                                           ? "Pending"
-                                          : leaveApplication[index]["publication_status"] ==
+                                          : leaveApplication[index]
+                                                      ["publication_status"] ==
                                                   "1"
                                               ? "Accepted By HOD"
-                                              : leaveApplication[index]
-                                                          ["publication_status"] ==
+                                              : leaveApplication[index][
+                                                          "publication_status"] ==
                                                       "2"
                                                   ? "Accepted By HR"
-                                                  : leaveApplication[index]
-                                                              ["publication_status"] ==
+                                                  : leaveApplication[index][
+                                                              "publication_status"] ==
                                                           "3"
-                                                      ? "Rejected By HOD"
-                                                      : "Rejected By HR",
+                                                      ? "Rejected By HR"
+                                                      : leaveApplication[index][
+                                                                  "publication_status"] ==
+                                                              "4"
+                                                          ? "Rejected By HOD"
+                                                          : leaveApplication[
+                                                                          index]
+                                                                      [
+                                                                      "publication_status"] ==
+                                                                  "6"
+                                                              ? "Accepted By CEO"
+                                                              : "Rejected By CEO",
                                       radius: 16.0,
                                       backgroundColor: AppTheme.appColor,
                                       textColor: AppTheme.whiteColor,
