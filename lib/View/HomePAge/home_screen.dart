@@ -144,7 +144,7 @@ class _LandingScreenState extends State<LandingScreen> {
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(top: 12.0),
-                            child: Image.asset("assets/images/logout.png"),
+                            child: Image.asset("assets/images/logout.png", height: 20,fit: BoxFit.fill,),
                           ),
                         )
                       ],

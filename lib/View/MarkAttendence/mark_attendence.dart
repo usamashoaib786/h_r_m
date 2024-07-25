@@ -204,7 +204,7 @@ class _MarkAttendenceScreenState extends State<MarkAttendenceScreen> {
                       onTap: () {
                         var now = DateTime.now();
                         String dayOfWeek = DateFormat('EEEE').format(now);
-                        if (dayOfWeek == 'Wednesday' || dayOfWeek == 'Sunday') {
+                        if (dayOfWeek == 'Saturday' || dayOfWeek == 'Sunday') {
                           Fluttertoast.showToast(
                               msg:
                                   "Attendence is not marked because office is off today");
