@@ -8,6 +8,7 @@ import 'package:h_r_m/View/Company%20Profile/company_profile.dart';
 import 'package:h_r_m/View/Employee%20List/employee_list.dart';
 import 'package:h_r_m/View/HOD%20View%20Leaves/hod_view_leaves.dart';
 import 'package:h_r_m/View/HomePAge/api.dart';
+import 'package:h_r_m/View/HomePAge/chart.dart';
 import 'package:h_r_m/View/Leave%20Quota/leave_quota.dart';
 import 'package:h_r_m/View/MarkAttendence/mark_attendence.dart';
 import 'package:h_r_m/View/Notice%20Board/notice_board.dart';
@@ -29,12 +30,15 @@ class _LandingScreenState extends State<LandingScreen> {
   bool isLoading = false;
   late AppDio dio;
   AppLogger logger = AppLogger();
+ 
   @override
   void initState() {
     dio = AppDio(context);
     logger.init();
     final homeApi = Provider.of<HomeApiProvider>(context, listen: false);
     homeApi.getUserProfile(dio: dio, context: context);
+    homeApi.getAtendence(dio: dio, context: context);
+
     homeApi.getUserDetail();
 
     super.initState();
@@ -52,10 +56,8 @@ class _LandingScreenState extends State<LandingScreen> {
               width: screenWidth,
               height: 280,
               decoration: BoxDecoration(
-                  color: AppTheme.appColor,
-                  borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(150),
-                      bottomRight: Radius.circular(150))),
+                color: AppTheme.appColor,
+              ),
               child: Padding(
                 padding: const EdgeInsets.only(top: 40.0, left: 20, right: 20),
                 child: Column(
@@ -144,7 +146,11 @@ class _LandingScreenState extends State<LandingScreen> {
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(top: 12.0),
-                            child: Image.asset("assets/images/logout.png", height: 20,fit: BoxFit.fill,),
+                            child: Image.asset(
+                              "assets/images/logout.png",
+                              height: 20,
+                              fit: BoxFit.fill,
+                            ),
                           ),
                         )
                       ],
@@ -152,46 +158,52 @@ class _LandingScreenState extends State<LandingScreen> {
                     const SizedBox(
                       height: 30,
                     ),
-                    SizedBox(
-                      height: 70,
-                      width: screenWidth - 100,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              customRow(
-                                  img: "assets/images/designation.png",
-                                  txt1: "Designation",
-                                  txt2: "${homeApi.userDes}"),
-                              customRow(
-                                  img: "assets/images/employee.png",
-                                  txt1: "Employee ID",
-                                  txt2: "DTM-${homeApi.empId}")
-                            ],
-                          ),
-                          Container(
-                            height: 80,
-                            width: 1,
-                            color: AppTheme.whiteColor,
-                          ),
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              customRow(
-                                  img: "assets/images/department.png",
-                                  txt1: "Department",
-                                  txt2: "${homeApi.empDep}"),
-                              customRow(
-                                  img: "assets/images/phone.png",
-                                  txt1: "Phone",
-                                  txt2: "${homeApi.userPhone}")
-                            ],
-                          )
-                        ],
+                    Container(
+                      height: 100,
+                      decoration: BoxDecoration(
+                          color: AppTheme.white,
+                          borderRadius: BorderRadius.circular(10)),
+                      width: screenWidth,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                customRow(
+                                    img: "assets/images/designation.png",
+                                    txt1: "Designation",
+                                    txt2: "${homeApi.userDes}"),
+                                customRow(
+                                    img: "assets/images/employee.png",
+                                    txt1: "Employee ID",
+                                    txt2: "DTM-${homeApi.empId}")
+                              ],
+                            ),
+                            Container(
+                              height: 60,
+                              width: 1,
+                              color: Colors.black,
+                            ),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                customRow(
+                                    img: "assets/images/department.png",
+                                    txt1: "Department",
+                                    txt2: "${homeApi.empDep}"),
+                                customRow(
+                                    img: "assets/images/phone.png",
+                                    txt1: "Phone",
+                                    txt2: "${homeApi.userPhone}")
+                              ],
+                            )
+                          ],
+                        ),
                       ),
                     )
                   ],
@@ -199,12 +211,24 @@ class _LandingScreenState extends State<LandingScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.only(
-                  top: 40, bottom: 40, left: 20, right: 20),
+                padding: const EdgeInsets.only(
+                    top: 20, bottom: 40, left: 20, right: 20),
+                child: Card(
+                  elevation: 10,
+                  child: Container(
+                    height: 100,
+                    decoration: BoxDecoration(
+                        color: AppTheme.white,
+                        borderRadius: BorderRadius.circular(10)),
+                    child: const PieChartSample2(),
+                  ),
+                )),
+            Padding(
+              padding: const EdgeInsets.only(bottom: 40, left: 20, right: 20),
               child: Wrap(
                 alignment: WrapAlignment.center,
                 runSpacing: 50,
-                spacing: 20,
+                spacing: 10,
                 children: [
                   if (homeApi.userType != "5")
                     customContainer(
@@ -215,8 +239,7 @@ class _LandingScreenState extends State<LandingScreen> {
                                 userId: homeApi.empId,
                               ));
                         },
-                        bgColor: AppTheme.appColor,
-                        txt: "Mark \nAttendance",
+                        txt: "Mark Attendance",
                         img: "assets/images/fingerPrint.png"),
                   if (homeApi.userType != "5")
                     customContainer(
@@ -227,8 +250,7 @@ class _LandingScreenState extends State<LandingScreen> {
                                 userId: homeApi.empId,
                               ));
                         },
-                        bgColor: AppTheme.appColor,
-                        txt: "View \nAttendance",
+                        txt: "View Attendance",
                         img: "assets/images/attendenceReq.png"),
                   if (homeApi.userType != "5")
                     customContainer(
@@ -239,8 +261,7 @@ class _LandingScreenState extends State<LandingScreen> {
                                 userId: homeApi.empId,
                               ));
                         },
-                        bgColor: AppTheme.appColor,
-                        txt: "Request \nLeave",
+                        txt: "Request Leave",
                         img: "assets/images/leavereq.png"),
                   if (homeApi.userType != "5")
                     customContainer(
@@ -251,16 +272,14 @@ class _LandingScreenState extends State<LandingScreen> {
                                 userId: homeApi.empId,
                               ));
                         },
-                        bgColor: AppTheme.green,
-                        txt: "Leave \nQuota",
+                        txt: "Leave Quota",
                         img: "assets/images/leaveQuota.png"),
                   if (homeApi.userType == "3" || homeApi.userType == "1")
                     customContainer(
                         onTap: () {
                           push(context, const EmployeeListScreen());
                         },
-                        bgColor: AppTheme.green,
-                        txt: "Employee \nList",
+                        txt: "Employee List",
                         img: "assets/images/leavereq.png"),
                   if (homeApi.userType == "3" ||
                       homeApi.userType == "1" ||
@@ -269,49 +288,31 @@ class _LandingScreenState extends State<LandingScreen> {
                         onTap: () {
                           push(context, const HodViewLeaves());
                         },
-                        bgColor: homeApi.userType == "5"
-                            ? AppTheme.appColor
-                            : AppTheme.green,
-                        txt: "View \nLeave Requests",
-                        img: "assets/images/leavereq.png"),
+                        txt: "View Leave Requests",
+                        img: "assets/images/viewLeaves.png"),
                   customContainer(
                       onTap: () {
                         push(context, const CompanyProfileScreen());
                       },
-                      bgColor: homeApi.userType == "3" ||
-                              homeApi.userType == "1" ||
-                              homeApi.userType == "5"
-                          ? AppTheme.appColor
-                          : AppTheme.green,
-                      txt: "Company \nProfile",
+                      txt: "Company Profile",
                       img: "assets/images/compProfile.png"),
                   customContainer(
                       onTap: () {
                         push(context, const RulesRegulationScreen());
                       },
-                      bgColor: homeApi.userType == "3" ||
-                              homeApi.userType == "1" ||
-                              homeApi.userType == "5"
-                          ? AppTheme.appColor
-                          : AppTheme.green,
-                      txt: "Rules & \nRegulations",
+                      txt: "Rules & Regulations",
                       img: "assets/images/rules.png"),
                   customContainer(
                       onTap: () {
                         push(context, const NoticeBoardScreen());
                       },
-                      bgColor:
-                          homeApi.userType == "3" || homeApi.userType == "1"
-                              ? AppTheme.appColor
-                              : AppTheme.green,
-                      txt: "Notice \n",
+                      txt: "Notice ",
                       img: "assets/images/notice.png"),
                   customContainer(
                       onTap: () {
                         push(context, const CommingEventsScreen());
                       },
-                      bgColor: AppTheme.green,
-                      txt: "Events \n",
+                      txt: "Events ",
                       img: "assets/images/events.png"),
                 ],
               ),
@@ -325,63 +326,32 @@ class _LandingScreenState extends State<LandingScreen> {
   Widget customContainer({bgColor, txt, img, onTap}) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
-        width: 90,
-        height: 100,
-        decoration: ShapeDecoration(
-          color: bgColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.only(top: 2.0, left: 2),
-          child: Container(
-            decoration: ShapeDecoration(
-              color: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              shadows: const [
-                BoxShadow(
-                  color: Color(0x3F000000),
-                  blurRadius: 7,
-                  offset: Offset(0, 4),
-                  spreadRadius: 0,
-                )
-              ],
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Card(
-                  elevation: 5,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
+      child: SizedBox(
+        height: 80,
+        width: 110,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Container(
+                width: 57,
+                height: 57,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(100),
+                    color: const Color.fromARGB(255, 233, 241, 240)),
+                child: Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Image.asset(
+                    "$img",
                   ),
-                  child: Container(
-                      width: 40,
-                      height: 30,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5),
-                          color: const Color(0xffF2F2F2)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(6.0),
-                        child: Image.asset(
-                          "$img",
-                        ),
-                      )),
-                ),
-                AppText.appText(
-                  '$txt',
-                  textAlign: TextAlign.center,
-                  textColor: const Color(0xFF555555),
-                  fontSize: 10,
-                  fontWeight: FontWeight.w700,
-                )
-              ],
-            ),
-          ),
+                )),
+            AppText.appText(
+              '$txt',
+              textAlign: TextAlign.center,
+              textColor: const Color(0xFF555555),
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+            )
+          ],
         ),
       ),
     );
@@ -393,20 +363,21 @@ class _LandingScreenState extends State<LandingScreen> {
         Image.asset(
           "$img",
           height: 18,
+          color: AppTheme.appColor,
         ),
         const SizedBox(
-          width: 7,
+          width: 10,
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             AppText.appText("$txt1",
                 fontSize: 13,
-                textColor: AppTheme.whiteColor,
+                textColor: Colors.black,
                 fontWeight: FontWeight.w700),
             AppText.appText("$txt2",
                 fontSize: 9,
-                textColor: AppTheme.whiteColor,
+                textColor: Colors.black,
                 fontWeight: FontWeight.w300),
           ],
         )

@@ -5,6 +5,8 @@ class AppUrls {
   static const String markAttendence = "employee/attendance/store";
   static const String checkOut = "employee/attendance/checkout";
   static const String getEmpProfile = "profile/user-profile/index";
+  static const String getAttendenceCount = "attendance-count";
+
   static const String updateProfile = "profile/user-profile";
   static const String getLeaveTypes = "employee/leave_categories/index";
   static const String requestLeave = "employee/leave_application/store";

@@ -57,6 +57,8 @@ dependencies:
   dots_indicator: ^3.0.0
   device_info: ^2.0.3
   fluttertoast: ^8.2.5
+  pie_chart: ^5.4.0
+  fl_chart: ^0.69.0
 
 flutter_icons:
   image_path: "assets/images/logo.png"
