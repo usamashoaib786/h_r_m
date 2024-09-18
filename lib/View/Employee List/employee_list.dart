@@ -6,8 +6,10 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:h_r_m/Constants/app_logger.dart';
 import 'package:h_r_m/Utils/resources/res/app_theme.dart';
 import 'package:h_r_m/Utils/widgets/others/app_text.dart';
+import 'package:h_r_m/View/HomePAge/api.dart';
 import 'package:h_r_m/config/app_urls.dart';
 import 'package:h_r_m/config/dio/app_dio.dart';
+import 'package:provider/provider.dart';
 
 class EmployeeListScreen extends StatefulWidget {
   const EmployeeListScreen({super.key});
@@ -26,7 +28,9 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
   void initState() {
     dio = AppDio(context);
     logger.init();
-    getEmployees();
+    final homeApi = Provider.of<HomeApiProvider>(context, listen: false);
+    homeApi.getUserDetail();
+    getEmployees(type: homeApi.userType);
     super.initState();
   }
 
@@ -61,11 +65,11 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                 ),
               )
             : SingleChildScrollView(
-              child: Column(
+                child: Column(
                   children: [
                     ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
                         itemCount: employeeDetail.length,
                         itemBuilder: (context, index) {
                           var data = employeeDetail[index];
@@ -134,12 +138,13 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
                     )
                   ],
                 ),
-            ),
+              ),
       ),
     );
   }
 
-  void getEmployees() async {
+  void getEmployees({type}) async {
+    print("object$type");
     setState(() {
       _isLoading = true;
     });
@@ -153,7 +158,12 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
     int responseCode500 = 500; // Internal server error.
 
     try {
-      response = await dio.get(path: AppUrls.getHodEmployees);
+      response = await dio.get(
+          path: type == "3"
+              ? AppUrls.getHodEmployees
+              : type == "1" || type == "4"
+                  ? AppUrls.getHrEmployees
+                  : AppUrls.getCeoEmployees);
       var responseData = response.data;
       if (response.statusCode == responseCode400) {
         Fluttertoast.showToast(msg: "${responseData["message"]}");
@@ -190,7 +200,10 @@ class _EmployeeListScreenState extends State<EmployeeListScreen> {
         } else {
           setState(() {
             _isLoading = false;
-            employeeDetail = responseData["departEmployees"];
+            type == "3"?
+            employeeDetail = responseData["departEmployees"]:
+            employeeDetail = responseData["employees"]
+            ;
           });
         }
       }

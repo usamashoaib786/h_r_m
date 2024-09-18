@@ -30,7 +30,7 @@ class _LandingScreenState extends State<LandingScreen> {
   bool isLoading = false;
   late AppDio dio;
   AppLogger logger = AppLogger();
- 
+
   @override
   void initState() {
     dio = AppDio(context);
@@ -220,7 +220,15 @@ class _LandingScreenState extends State<LandingScreen> {
                     decoration: BoxDecoration(
                         color: AppTheme.white,
                         borderRadius: BorderRadius.circular(10)),
-                    child: const PieChartSample2(),
+                    child: homeApi.empAtendence == null
+                        ? Center(
+                            child: CircularProgressIndicator(
+                              color: AppTheme.appColor,
+                            ),
+                          )
+                        : PieChartSample2(
+                            attData: homeApi.empAtendence,
+                          ),
                   ),
                 )),
             Padding(
@@ -274,7 +282,9 @@ class _LandingScreenState extends State<LandingScreen> {
                         },
                         txt: "Leave Quota",
                         img: "assets/images/leaveQuota.png"),
-                  if (homeApi.userType == "3" || homeApi.userType == "1")
+                  if (homeApi.userType == "3" ||
+                      homeApi.userType == "1" ||
+                      homeApi.userType == "5")
                     customContainer(
                         onTap: () {
                           push(context, const EmployeeListScreen());

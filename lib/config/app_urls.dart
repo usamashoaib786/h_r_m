@@ -15,6 +15,8 @@ class AppUrls {
   static const String getNotices = "employee/notice/show";
   static const String getEvents = "personal_events";
   static const String getHodEmployees = "hod/employees";
+  static const String getHrEmployees = "hr/all/employees";
+  static const String getCeoEmployees = "ceo/all/employees";
   static const String getEmployeeLeaveRequests =
       "hod/employee/leave_application";
   static const String getCeoLeaveRequests = "ceo/leave_application/index";

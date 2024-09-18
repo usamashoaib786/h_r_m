@@ -15,6 +15,7 @@ class HomeApiProvider extends ChangeNotifier {
   String? userDes;
   String? userEmail;
   String? userPhone;
+  var empAtendence;
 
   void getUserProfile({
     required dio,
@@ -60,8 +61,6 @@ class HomeApiProvider extends ChangeNotifier {
         notifyListeners();
       } else if (response.statusCode == responseCode200) {
         if (responseData["status"] == false) {
-          Fluttertoast.showToast(msg: "${responseData["message"]}");
-
           isLoading = false;
           notifyListeners();
 
@@ -80,8 +79,7 @@ class HomeApiProvider extends ChangeNotifier {
     }
   }
 
-
-   void getAtendence({
+  void getAtendence({
     required dio,
     required BuildContext context,
   }) async {
@@ -124,18 +122,11 @@ class HomeApiProvider extends ChangeNotifier {
         isLoading = false;
         notifyListeners();
       } else if (response.statusCode == responseCode200) {
-        if (responseData["status"] == false) {
-          Fluttertoast.showToast(msg: "${responseData["message"]}");
+        empAtendence = responseData;
+        isLoading = false;
+        notifyListeners();
 
-          isLoading = false;
-          notifyListeners();
-
-          return;
-        } else {
-          isLoading = false;
-          print("kn3kfk3f;nfnn$responseData");
-          notifyListeners();
-        }
+        return;
       }
     } catch (e) {
       Fluttertoast.showToast(msg: "Something went Wrong.");
