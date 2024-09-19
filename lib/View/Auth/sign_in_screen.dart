@@ -151,6 +151,9 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   void signIn(context) async {
+    if (kDebugMode) {
+      print("mlmlmf$_deviceID");
+    }
     setState(() {
       _isLoading = true;
     });

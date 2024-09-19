@@ -1,6 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:h_r_m/Utils/utils.dart';
+import 'package:h_r_m/View/Auth/sign_in_screen.dart';
 import 'package:h_r_m/config/app_urls.dart';
 import 'package:h_r_m/config/keys/pref_keys.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -42,14 +44,18 @@ class HomeApiProvider extends ChangeNotifier {
         isLoading = false;
         notifyListeners();
       } else if (response.statusCode == responseCode401) {
-        Fluttertoast.showToast(msg: "${responseData["message"]}");
+        Fluttertoast.showToast(msg: "Token Expires Please Login Again");
 
         isLoading = false;
+       // ignore: use_build_context_synchronously
+        
+        pushReplacement(context, const SignInScreen());
         notifyListeners();
       } else if (response.statusCode == responseCode404) {
         Fluttertoast.showToast(msg: "${responseData["message"]}");
 
         isLoading = false;
+
         notifyListeners();
       } else if (response.statusCode == responseCode500) {
         Fluttertoast.showToast(msg: "${responseData["message"]}");

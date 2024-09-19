@@ -27,6 +27,7 @@ class _SplashScreenState extends State<SplashScreen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     String? token = prefs.getString(PrefKey.authorization);
+    print("krgnrlmm$token");
 
     if (token != null && token.isNotEmpty) {
       pushReplacement(context, const BottomNavView());
