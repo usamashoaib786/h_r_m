@@ -1,4 +1,7 @@
-import 'package:device_info/device_info.dart';
+import 'dart:io';
+
+import 'package:android_id/android_id.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +28,7 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  String _deviceID = 'Loading...';
+  String? _deviceID;
   bool _isLoading = false;
   late AppDio dio;
   AppLogger logger = AppLogger();
@@ -33,17 +36,24 @@ class _SignInScreenState extends State<SignInScreen> {
   void initState() {
     dio = AppDio(context);
     logger.init();
-    _getDeviceID();
+    getId();
     super.initState();
   }
 
-  Future<void> _getDeviceID() async {
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-    AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-    setState(() {
-      _deviceID = androidInfo.androidId;
-      if (kDebugMode) {}
-    });
+  getId() async {
+    _deviceID = await _getDeviceID();
+  }
+
+  Future<String?> _getDeviceID() async {
+    var deviceInfo = DeviceInfoPlugin();
+    if (Platform.isIOS) {
+      // import 'dart:io'
+      var iosDeviceInfo = await deviceInfo.iosInfo;
+      // unique ID on iOS
+    } else if (Platform.isAndroid) {
+      var androidDeviceInfo = await deviceInfo.androidInfo;
+      return AndroidId().getId(); // unique ID on Android
+    }
   }
 
   @override
@@ -255,4 +265,5 @@ class _SignInScreenState extends State<SignInScreen> {
       });
     }
   }
+
 }
